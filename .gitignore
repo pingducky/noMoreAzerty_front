@@ -1,0 +1,14 @@
+# Visual Studio
+.vs/
+.vscode/
+.idea/
+
+# Build results
+[Bb]in/
+[Oo]bj/
+out/
+artifacts/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates

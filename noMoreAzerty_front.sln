@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35527.113 d17.12
+VisualStudioVersion = 17.12.35527.113
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "noMoreAzerty_front", "noMoreAzerty_front\noMoreAzerty_front.csproj", "{3A55C46E-26D6-4ED3-8AE8-21A5CA1E2ABB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "noMoreAzerty_front", "noMoreAzerty_front\noMoreAzerty_front.csproj", "{3A55C46E-26D6-4ED3-8AE8-21A5CA1E2ABB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,5 +18,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D999A3EF-AA05-4CED-8C9C-A738D64AEA0E}
 	EndGlobalSection
 EndGlobal

@@ -1,0 +1,25 @@
+﻿@inject NavigationManager Navigation
+
+<AuthorizeView>
+    <Authorized>
+        Hello, @context.User.Identity?.Name
+        <button class="nav-link btn btn-link" @onclick="BeginLogOut">Log out</button>
+    </Authorized>
+    <NotAuthorized>
+        @if (Navigation.Uri.Contains("authentication/login"))
+        {
+            <span>Loading...</span>
+        }
+        else
+        {
+            <a href="authentication/login">Login</a>
+        }
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    public void BeginLogOut()
+    {
+        Navigation.NavigateToLogout("authentication/logout");
+    }
+}
