@@ -1,8 +1,39 @@
 ﻿@page "/authentication/{action}"
 
-<RemoteAuthenticatorView Action="@Action" />
+<RemoteAuthenticatorView Action="@Action" OnLogInSucceeded="HandleLogInSucceeded" />
+
+@if (!string.IsNullOrEmpty(Token))
+{
+    <h3>Token JWT :</h3>
+    <p>@Token</p>
+}
 
 @code {
     [Parameter]
     public string? Action { get; set; }
+
+    [Inject]
+    public NavigationManager NavigationManager { get; set; }
+
+    [Inject]
+    public IAccessTokenProvider TokenProvider { get; set; }
+
+    private string? Token { get; set; }
+
+    private async void HandleLogInSucceeded()
+    {
+        // Récupérer le token JWT
+        var result = await TokenProvider.RequestAccessToken();
+        if (result.TryGetToken(out var accessToken))
+        {
+            Token = accessToken.Value; // Stocker le token
+            Console.WriteLine("Token récupéré avec succès : " + Token);
+        }
+        else
+        {
+            Console.WriteLine("Impossible de récupérer le token.");
+        }
+
+        NavigationManager.NavigateTo("/");
+    }
 }
