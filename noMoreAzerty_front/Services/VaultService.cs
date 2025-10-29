@@ -14,7 +14,7 @@ public class VaultService
 
     public async Task<List<Vault>> GetAllVaultsAsync()
     {
-        var response = await _httpClient.GetAsync("api/vaults");
+        var response = await _httpClient.GetAsync("api/vault");
         Console.WriteLine("Response : " + response.ToString());
         Console.WriteLine("Response Status Code: " + response.StatusCode);
         response.EnsureSuccessStatusCode();
