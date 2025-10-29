@@ -38,16 +38,12 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQXV0aGVudGljYXRpb24ucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/antho/OneDrive/Documents/Cours/M2/Architecture .NET/TP/noMoreAzerty_front/noMoreAzerty_front/Pages/Counter.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ291bnRlci5yYXpvcg==
-build_metadata.AdditionalFiles.CssScope = 
-
 [C:/Users/antho/OneDrive/Documents/Cours/M2/Architecture .NET/TP/noMoreAzerty_front/noMoreAzerty_front/Pages/Home.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSG9tZS5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/antho/OneDrive/Documents/Cours/M2/Architecture .NET/TP/noMoreAzerty_front/noMoreAzerty_front/Pages/Weather.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcV2VhdGhlci5yYXpvcg==
+[C:/Users/antho/OneDrive/Documents/Cours/M2/Architecture .NET/TP/noMoreAzerty_front/noMoreAzerty_front/Pages/Vaults.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVmF1bHRzLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/antho/OneDrive/Documents/Cours/M2/Architecture .NET/TP/noMoreAzerty_front/noMoreAzerty_front/_Imports.razor]

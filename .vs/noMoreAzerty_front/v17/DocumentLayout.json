@@ -3,20 +3,16 @@
   "WorkspaceRootPath": "C:\\Users\\antho\\OneDrive\\Documents\\Cours\\M2\\Architecture .NET\\TP\\noMoreAzerty_front\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{3A55C46E-26D6-4ED3-8AE8-21A5CA1E2ABB}|noMoreAzerty_front\\noMoreAzerty_front.csproj|c:\\users\\antho\\onedrive\\documents\\cours\\m2\\architecture .net\\tp\\nomoreazerty_front\\nomoreazerty_front\\services\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{3A55C46E-26D6-4ED3-8AE8-21A5CA1E2ABB}|noMoreAzerty_front\\noMoreAzerty_front.csproj|solutionrelative:nomoreazerty_front\\services\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{3A55C46E-26D6-4ED3-8AE8-21A5CA1E2ABB}|noMoreAzerty_front\\noMoreAzerty_front.csproj|c:\\users\\antho\\onedrive\\documents\\cours\\m2\\architecture .net\\tp\\nomoreazerty_front\\nomoreazerty_front\\pages\\authentication.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{3A55C46E-26D6-4ED3-8AE8-21A5CA1E2ABB}|noMoreAzerty_front\\noMoreAzerty_front.csproj|solutionrelative:nomoreazerty_front\\pages\\authentication.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{3A55C46E-26D6-4ED3-8AE8-21A5CA1E2ABB}|noMoreAzerty_front\\noMoreAzerty_front.csproj|c:\\users\\antho\\onedrive\\documents\\cours\\m2\\architecture .net\\tp\\nomoreazerty_front\\nomoreazerty_front\\services\\vaultservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3A55C46E-26D6-4ED3-8AE8-21A5CA1E2ABB}|noMoreAzerty_front\\noMoreAzerty_front.csproj|solutionrelative:nomoreazerty_front\\services\\vaultservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{3A55C46E-26D6-4ED3-8AE8-21A5CA1E2ABB}|noMoreAzerty_front\\noMoreAzerty_front.csproj|c:\\users\\antho\\onedrive\\documents\\cours\\m2\\architecture .net\\tp\\nomoreazerty_front\\nomoreazerty_front\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{3A55C46E-26D6-4ED3-8AE8-21A5CA1E2ABB}|noMoreAzerty_front\\noMoreAzerty_front.csproj|solutionrelative:nomoreazerty_front\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{3A55C46E-26D6-4ED3-8AE8-21A5CA1E2ABB}|noMoreAzerty_front\\noMoreAzerty_front.csproj|c:\\users\\antho\\onedrive\\documents\\cours\\m2\\architecture .net\\tp\\nomoreazerty_front\\nomoreazerty_front\\layout\\logindisplay.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{3A55C46E-26D6-4ED3-8AE8-21A5CA1E2ABB}|noMoreAzerty_front\\noMoreAzerty_front.csproj|solutionrelative:nomoreazerty_front\\layout\\logindisplay.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{3A55C46E-26D6-4ED3-8AE8-21A5CA1E2ABB}|noMoreAzerty_front\\noMoreAzerty_front.csproj|c:\\users\\antho\\onedrive\\documents\\cours\\m2\\architecture .net\\tp\\nomoreazerty_front\\nomoreazerty_front\\pages\\vaults.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{3A55C46E-26D6-4ED3-8AE8-21A5CA1E2ABB}|noMoreAzerty_front\\noMoreAzerty_front.csproj|solutionrelative:nomoreazerty_front\\pages\\vaults.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     }
   ],
   "DocumentGroupContainers": [
@@ -26,7 +22,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 7,
+          "SelectedChildIndex": 5,
           "Children": [
             {
               "$type": "Bookmark",
@@ -46,51 +42,41 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "LoginDisplay.razor",
-              "DocumentMoniker": "C:\\Users\\antho\\OneDrive\\Documents\\Cours\\M2\\Architecture .NET\\TP\\noMoreAzerty_front\\noMoreAzerty_front\\Layout\\LoginDisplay.razor",
-              "RelativeDocumentMoniker": "noMoreAzerty_front\\Layout\\LoginDisplay.razor",
-              "ToolTip": "C:\\Users\\antho\\OneDrive\\Documents\\Cours\\M2\\Architecture .NET\\TP\\noMoreAzerty_front\\noMoreAzerty_front\\Layout\\LoginDisplay.razor",
-              "RelativeToolTip": "noMoreAzerty_front\\Layout\\LoginDisplay.razor",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAmAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-28T14:35:49.859Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 1,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\antho\\OneDrive\\Documents\\Cours\\M2\\Architecture .NET\\TP\\noMoreAzerty_front\\noMoreAzerty_front\\Program.cs",
               "RelativeDocumentMoniker": "noMoreAzerty_front\\Program.cs",
               "ToolTip": "C:\\Users\\antho\\OneDrive\\Documents\\Cours\\M2\\Architecture .NET\\TP\\noMoreAzerty_front\\noMoreAzerty_front\\Program.cs",
               "RelativeToolTip": "noMoreAzerty_front\\Program.cs",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAAABkAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAAABcAAAACAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-28T13:38:28.568Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Authentication.razor",
-              "DocumentMoniker": "C:\\Users\\antho\\OneDrive\\Documents\\Cours\\M2\\Architecture .NET\\TP\\noMoreAzerty_front\\noMoreAzerty_front\\Pages\\Authentication.razor",
-              "RelativeDocumentMoniker": "noMoreAzerty_front\\Pages\\Authentication.razor",
-              "ToolTip": "C:\\Users\\antho\\OneDrive\\Documents\\Cours\\M2\\Architecture .NET\\TP\\noMoreAzerty_front\\noMoreAzerty_front\\Pages\\Authentication.razor",
-              "RelativeToolTip": "noMoreAzerty_front\\Pages\\Authentication.razor",
-              "ViewState": "AgIAAAwAAAAAAAAAAAAAABcAAAAFAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-28T13:48:57.57Z"
+              "WhenOpened": "2025-10-28T13:38:28.568Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "UserService.cs",
-              "DocumentMoniker": "C:\\Users\\antho\\OneDrive\\Documents\\Cours\\M2\\Architecture .NET\\TP\\noMoreAzerty_front\\noMoreAzerty_front\\Services\\UserService.cs",
-              "RelativeDocumentMoniker": "noMoreAzerty_front\\Services\\UserService.cs",
-              "ToolTip": "C:\\Users\\antho\\OneDrive\\Documents\\Cours\\M2\\Architecture .NET\\TP\\noMoreAzerty_front\\noMoreAzerty_front\\Services\\UserService.cs",
-              "RelativeToolTip": "noMoreAzerty_front\\Services\\UserService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAAAAAAAAAAAA==",
+              "Title": "VaultService.cs",
+              "DocumentMoniker": "C:\\Users\\antho\\OneDrive\\Documents\\Cours\\M2\\Architecture .NET\\TP\\noMoreAzerty_front\\noMoreAzerty_front\\Services\\VaultService.cs",
+              "RelativeDocumentMoniker": "noMoreAzerty_front\\Services\\VaultService.cs",
+              "ToolTip": "C:\\Users\\antho\\OneDrive\\Documents\\Cours\\M2\\Architecture .NET\\TP\\noMoreAzerty_front\\noMoreAzerty_front\\Services\\VaultService.cs",
+              "RelativeToolTip": "noMoreAzerty_front\\Services\\VaultService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-28T13:35:05.723Z",
+              "WhenOpened": "2025-10-29T11:28:06.798Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Vaults.razor",
+              "DocumentMoniker": "C:\\Users\\antho\\OneDrive\\Documents\\Cours\\M2\\Architecture .NET\\TP\\noMoreAzerty_front\\noMoreAzerty_front\\Pages\\Vaults.razor",
+              "RelativeDocumentMoniker": "noMoreAzerty_front\\Pages\\Vaults.razor",
+              "ToolTip": "C:\\Users\\antho\\OneDrive\\Documents\\Cours\\M2\\Architecture .NET\\TP\\noMoreAzerty_front\\noMoreAzerty_front\\Pages\\Vaults.razor",
+              "RelativeToolTip": "noMoreAzerty_front\\Pages\\Vaults.razor",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAABsAAAA1AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-10-29T11:23:21.882Z",
               "EditorCaption": ""
             }
           ]

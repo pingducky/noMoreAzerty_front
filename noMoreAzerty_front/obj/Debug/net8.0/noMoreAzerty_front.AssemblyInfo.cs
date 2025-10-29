@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("noMoreAzerty_front")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+dd1b117692e9131289faa6c81da0da45eb8adc32")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+546bf767c8ae16955ce38773e0a142f017344a3a")]
 [assembly: System.Reflection.AssemblyProductAttribute("noMoreAzerty_front")]
 [assembly: System.Reflection.AssemblyTitleAttribute("noMoreAzerty_front")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

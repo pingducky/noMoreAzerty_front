@@ -1,0 +1,30 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@inject VaultService VaultService
+@page "/vaults"
+@attribute [Authorize]
+
+<PageTitle>My Vaults</PageTitle>
+
+<h1>My Vaults</h1>
+
+<p role="status">Current count: @currentCount</p>
+
+<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+
+@code {
+    private int currentCount = 0;
+    
+    private void IncrementCount()
+    {
+        currentCount++;
+    }
+
+    private List<VaultService.Vault> vaults = [];
+
+    // oninit async Task LoadVaults()
+    protected override async Task OnInitializedAsync()
+    {
+        Console.WriteLine("Loading vaults...");
+        vaults = await VaultService.GetAllVaultsAsync();
+    }
+}
