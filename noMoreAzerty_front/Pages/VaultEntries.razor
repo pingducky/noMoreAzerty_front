@@ -1,0 +1,51 @@
+﻿@page "/vaults/{vaultId:guid}"
+@inject VaultService VaultService
+@inject VaultEntryService VaultEntryService
+@inject NavigationManager Navigation
+
+<PageTitle>Vault Entries</PageTitle>
+
+<h1>Entries for Vault: @Vault?.Name</h1>
+
+@if (Vault == null)
+{
+    <MudText Color="Color.Secondary">Loading...</MudText>
+}
+else if (Entries == null || !Entries.Any())
+{
+    <MudText Color="Color.Secondary">No entries found in this vault.</MudText>
+}
+else
+{
+    <MudList T="VaultEntryService.VaultEntry">
+        @foreach (var entry in Entries)
+        {
+            <MudListItem T="VaultEntryService.VaultEntry">
+                <MudText>@entry.CipherTitle</MudText>
+            </MudListItem>
+        }
+    </MudList>
+}
+
+@code {
+    [Parameter] public Guid VaultId { get; set; }
+    private VaultService.Vault? Vault { get; set; }
+    private List<VaultEntryService.VaultEntry>? Entries { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Charger les informations du vault
+        //Vault = await VaultService.GetVaultByIdAsync(VaultId);
+        Vault = VaultService.CurrentVault;
+
+        if (Vault != null)
+        {
+            // Charger les entrées du vault
+            //Entries = await VaultEntryService.GetEntriesByVaultIdAsync(VaultId);
+
+            // fake data
+            Entries = Enumerable.Range(1, 5).Select(i => new VaultEntryService.VaultEntry { Id = new Guid(), CipherTitle = $"Entry {i} in {Vault.Name}" }).ToList();
+
+        }
+    }
+}

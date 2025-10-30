@@ -5,6 +5,8 @@ namespace noMoreAzerty_front.Services;
 
 public class VaultService
 {
+    public VaultService.Vault? CurrentVault { get; set; }
+
     private readonly HttpClient _httpClient;
 
     public VaultService(IHttpClientFactory httpClientFactory)
@@ -15,8 +17,6 @@ public class VaultService
     public async Task<List<Vault>> GetAllVaultsAsync()
     {
         var response = await _httpClient.GetAsync("api/vault");
-        Console.WriteLine("Response : " + response.ToString());
-        Console.WriteLine("Response Status Code: " + response.StatusCode);
         response.EnsureSuccessStatusCode();
         var content = await response.Content.ReadAsStringAsync();
         return JsonSerializer.Deserialize<List<Vault>>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
@@ -30,4 +30,5 @@ public class VaultService
         public string? PasswordSalt { get; set; }
         public DateTime CreatedAt { get; set; }
     }
+
 }

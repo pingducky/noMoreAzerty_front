@@ -9,7 +9,7 @@
 <h1>My Vaults</h1>
 
 <MudContainer>
-    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="CreateVault">Create vault</MudButton>
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="OpenCreateVaultDialog">Create vault</MudButton>
 
     @if (vaults == null || !vaults.Any())
     {
@@ -17,19 +17,26 @@
     }
     else
     {
-        <MudStack Spacing="2">
-            @foreach (var vault in vaults)
-            {
-                <MudPaper Elevation="2" Class="pa-2">
-                    <MudText>@vault.Name</MudText>
-                </MudPaper>
-            }
-        </MudStack>
+        <MudContainer MaxWidth="MaxWidth.Medium">
+            <MudList T="VaultService.Vault" Dense="false">
+                @foreach (var vault in vaults)
+                {
+                    <MudListItem T="VaultService.Vault" Selected="@(selectedVault?.Id == vault.Id)"
+                                 OnClick="() => SelectVault(vault)"
+                                 Class="vault-list-item"
+                                 DisableRipple="false">
+                        <MudText>@vault.Name</MudText>
+                    </MudListItem>
+                }
+            </MudList>
+        </MudContainer>
     }
 </MudContainer>
 
 @code {
     private List<VaultService.Vault> vaults = new();
+
+    private VaultService.Vault? selectedVault;
 
     protected override async Task OnInitializedAsync()
     {
@@ -38,6 +45,12 @@
         // generate false vaults
         vaults = Enumerable.Range(1, 5).Select(i => new VaultService.Vault { Id = new Guid(), Name = $"Vault {i}" }).ToList();
 
+    }
+
+    private async Task SelectVault(VaultService.Vault vault)
+    {
+        selectedVault = vault;
+        await OpenPasswordDialog(vault);
     }
 
     private void CreateVault()
@@ -52,14 +65,26 @@
         {
             { "OnSave", EventCallback.Factory.Create<VaultService.Vault>(this, AddVault) }
         };
-
+    
         var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true };
-
+    
         DialogService.Show<CreateVaultDialog>("Create Vault", parameters, options);
     }
-
+    
     private void AddVault(VaultService.Vault newVault)
     {
         vaults.Add(newVault);
+    }
+
+    private async Task OpenPasswordDialog(VaultService.Vault vault)
+    {
+        var parameters = new DialogParameters
+        {
+            { "Vault", vault }
+        };
+
+        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true };
+
+        DialogService.Show<PasswordDialog>("Enter Password", parameters, options);
     }
 }
