@@ -1,9 +1,8 @@
 ﻿@using Microsoft.AspNetCore.Authorization
 @inject VaultService VaultService
+@inject IDialogService DialogService
 @page "/vaults"
 @attribute [Authorize]
-
-<PageTitle>My Vaults</PageTitle>
 
 <PageTitle>My Vaults</PageTitle>
 
@@ -45,5 +44,22 @@
     {
         // Logique pour créer un nouveau vault (à implémenter)
         Console.WriteLine("Créer un nouveau vault");
+    }
+
+    private async Task OpenCreateVaultDialog()
+    {
+        var parameters = new DialogParameters
+        {
+            { "OnSave", EventCallback.Factory.Create<VaultService.Vault>(this, AddVault) }
+        };
+
+        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true };
+
+        DialogService.Show<CreateVaultDialog>("Create Vault", parameters, options);
+    }
+
+    private void AddVault(VaultService.Vault newVault)
+    {
+        vaults.Add(newVault);
     }
 }

@@ -1,0 +1,39 @@
+﻿<MudDialog>
+    <MudDialogTitle>Create Vault</MudDialogTitle>
+    <MudDialogContent>
+        <MudTextField Label="Vault Name" @bind-Value="VaultName" Required="true" />
+        <MudTextField Label="Password" @bind-Value="Password" InputType="InputType.Password" Required="true" />
+    </MudDialogContent>
+    <MudDialogActions>
+        <MudButton OnClick="Save" Color="Color.Primary" Variant="Variant.Filled">Save</MudButton>
+        <MudButton OnClick="Cancel" Color="Color.Secondary" Variant="Variant.Text">Cancel</MudButton>
+    </MudDialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] IMudDialogInstance MudDialog { get; set; } = default!;
+    [Parameter] public EventCallback<VaultService.Vault> OnSave { get; set; }
+
+    private string VaultName { get; set; } = string.Empty;
+    private string Password { get; set; } = string.Empty;
+
+    private async Task Save()
+    {
+        if (!string.IsNullOrWhiteSpace(VaultName) && !string.IsNullOrWhiteSpace(Password))
+        {
+            var newVault = new VaultService.Vault
+            {
+                Id = Guid.NewGuid(),
+                Name = VaultName
+            };
+
+            await OnSave.InvokeAsync(newVault);
+            MudDialog.Close();
+        }
+    }
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+}

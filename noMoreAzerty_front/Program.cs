@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using noMoreAzerty_front;
 using noMoreAzerty_front.Services;
 using MudBlazor.Services;
+using Microsoft.AspNetCore.Components;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -32,4 +33,11 @@ builder.Services.AddHttpClient("API", client =>
 builder.Services.AddScoped<VaultService>();
 builder.Services.AddMudServices();
 
-await builder.Build().RunAsync();
+
+var app = builder.Build();
+
+// Redirection vers /vaults au démarrage
+var navigationManager = app.Services.GetRequiredService<NavigationManager>();
+navigationManager.NavigateTo("/vaults");
+
+await app.RunAsync();
