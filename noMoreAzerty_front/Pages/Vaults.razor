@@ -1,7 +1,7 @@
-﻿@using Microsoft.AspNetCore.Authorization
+﻿@page "/vaults"
+@using Microsoft.AspNetCore.Authorization
 @inject VaultService VaultService
 @inject IDialogService DialogService
-@page "/vaults"
 @attribute [Authorize]
 
 <PageTitle>My Vaults</PageTitle>
@@ -9,11 +9,13 @@
 <h1>My Vaults</h1>
 
 <MudContainer>
-    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="OpenCreateVaultDialog">Create vault</MudButton>
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="OpenCreateVaultDialog">
+        Create Vault
+    </MudButton>
 
     @if (vaults == null || !vaults.Any())
     {
-        <MudText Color="Color.Secondary">Create you first vault !</MudText>
+        <MudText Color="Color.Secondary">Create your first vault!</MudText>
     }
     else
     {
@@ -21,7 +23,8 @@
             <MudList T="VaultService.Vault" Dense="false">
                 @foreach (var vault in vaults)
                 {
-                    <MudListItem T="VaultService.Vault" Selected="@(selectedVault?.Id == vault.Id)"
+                    <MudListItem T="VaultService.Vault"
+                                 Selected="@(selectedVault?.Id == vault.Id)"
                                  OnClick="() => SelectVault(vault)"
                                  Class="vault-list-item"
                                  DisableRipple="false">
@@ -35,16 +38,12 @@
 
 @code {
     private List<VaultService.Vault> vaults = new();
-
     private VaultService.Vault? selectedVault;
 
     protected override async Task OnInitializedAsync()
     {
+        // Récupération initiale des vaults existants
         //vaults = await VaultService.GetAllVaultsAsync();
-    
-        // generate false vaults
-        vaults = Enumerable.Range(1, 5).Select(i => new VaultService.Vault { Id = new Guid(), Name = $"Vault {i}" }).ToList();
-
     }
 
     private async Task SelectVault(VaultService.Vault vault)
@@ -53,27 +52,27 @@
         await OpenPasswordDialog(vault);
     }
 
-    private void CreateVault()
-    {
-        // Logique pour créer un nouveau vault (à implémenter)
-        Console.WriteLine("Créer un nouveau vault");
-    }
-
     private async Task OpenCreateVaultDialog()
     {
         var parameters = new DialogParameters
         {
             { "OnSave", EventCallback.Factory.Create<VaultService.Vault>(this, AddVault) }
         };
-    
-        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true };
-    
+
+        var options = new DialogOptions
+        {
+            CloseButton = true,
+            MaxWidth = MaxWidth.Small,
+            FullWidth = true
+        };
+
         DialogService.Show<CreateVaultDialog>("Create Vault", parameters, options);
     }
-    
+
     private void AddVault(VaultService.Vault newVault)
     {
         vaults.Add(newVault);
+        StateHasChanged();
     }
 
     private async Task OpenPasswordDialog(VaultService.Vault vault)
@@ -83,7 +82,12 @@
             { "Vault", vault }
         };
 
-        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true };
+        var options = new DialogOptions
+        {
+            CloseButton = true,
+            MaxWidth = MaxWidth.Small,
+            FullWidth = true
+        };
 
         DialogService.Show<PasswordDialog>("Enter Password", parameters, options);
     }
