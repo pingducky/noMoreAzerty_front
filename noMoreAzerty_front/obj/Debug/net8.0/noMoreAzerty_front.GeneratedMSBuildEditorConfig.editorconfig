@@ -33,6 +33,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xDcmVhdGVWYXVsdERpYWxvZy5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/antho/OneDrive/Documents/Cours/M2/Architecture .NET/TP/noMoreAzerty_front/noMoreAzerty_front/Components/CreateVaultEntryDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xDcmVhdGVWYXVsdEVudHJ5RGlhbG9nLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/antho/OneDrive/Documents/Cours/M2/Architecture .NET/TP/noMoreAzerty_front/noMoreAzerty_front/Components/PasswordDialog.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYXNzd29yZERpYWxvZy5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 

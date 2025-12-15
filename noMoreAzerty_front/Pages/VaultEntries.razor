@@ -2,35 +2,54 @@
 @inject VaultService VaultService
 @inject VaultEntryService VaultEntryService
 @inject NavigationManager Navigation
+@inject IDialogService DialogService
+@inject IJSRuntime JSRuntime
 
 <PageTitle>Vault Entries</PageTitle>
 
-<h1>Entries for Vault: @Vault?.Name</h1>
+<MudContainer>
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="OpenCreateVaultEntryDialog">Create entry</MudButton>
 
-@if (Vault == null)
-{
-    <MudText Color="Color.Secondary">Loading...</MudText>
-}
-else if (Entries == null || !Entries.Any())
-{
-    <MudText Color="Color.Secondary">No entries found in this vault.</MudText>
-}
-else
-{
-    <MudList T="VaultEntryService.VaultEntry">
-        @foreach (var entry in Entries)
-        {
-            <MudListItem T="VaultEntryService.VaultEntry">
-                <MudText>@entry.CipherTitle</MudText>
-            </MudListItem>
-        }
-    </MudList>
-}
+   <h1>Entries for Vault: @Vault?.Name</h1>
+
+    @if (Vault == null)
+    {
+        <MudText Color="Color.Secondary">Loading...</MudText>
+    }
+    else if (Entries == null || !Entries.Any())
+    {
+        <MudText Color="Color.Secondary">No entries found in this vault.</MudText>
+    }
+    else
+    {
+        <MudStack Spacing="2">
+            @foreach (var entry in Entries)
+            {
+                <MudPaper Elevation="1"
+                          Class="@($"vault-card {(selectedEntry?.Id == entry.Id ? "selected" : "")}")">
+
+                    <MudStack Row="true" AlignItems="AlignItems.Center">
+                        <MudText Typo="Typo.subtitle1">
+                            @entry.CipherTitle
+                        </MudText>
+
+                        <MudSpacer />
+
+                        <MudIconButton Color="Color.Error"
+                                       Icon="@Icons.Material.Filled.Delete" />
+                    </MudStack>
+
+                </MudPaper>
+            }
+        </MudStack>
+    }
+</MudContainer>
 
 @code {
     [Parameter] public Guid VaultId { get; set; }
     private VaultService.Vault? Vault { get; set; }
     private List<VaultEntryService.VaultEntry>? Entries { get; set; }
+    private VaultEntryService.VaultEntry? selectedEntry;
 
     protected override async Task OnInitializedAsync()
     {
@@ -38,14 +57,44 @@ else
         //Vault = await VaultService.GetVaultByIdAsync(VaultId);
         Vault = VaultService.CurrentVault;
 
+        if (Vault == null)
+        {
+            // Si le Vault n'est pas dans le service, le récupérer via l'API
+            //Vault = await VaultService.GetVaultByIdAsync(VaultId);
+
+            // TODO : Si toujours null erreur
+        }
+
+
         if (Vault != null)
         {
-            // Charger les entrées du vault
+            // Charger les entrées du vault (Title)
             //Entries = await VaultEntryService.GetEntriesByVaultIdAsync(VaultId);
 
             // fake data
             Entries = Enumerable.Range(1, 5).Select(i => new VaultEntryService.VaultEntry { Id = new Guid(), CipherTitle = $"Entry {i} in {Vault.Name}" }).ToList();
 
+            // TODO : Générer la clé symétrique
+
+
+            // TODO : Décrypter les entrées (Title) avec la clé symétrique
         }
+    }
+
+    private async Task OpenCreateVaultEntryDialog()
+    {
+        var parameters = new DialogParameters
+        {
+            { "OnSave", EventCallback.Factory.Create<VaultEntryService.VaultEntry>(this, AddVault) }
+        };
+
+        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true };
+
+        DialogService.Show<CreateVaultEntryDialog>("Create Entry", parameters, options);
+    }
+
+    private void AddVault(VaultEntryService.VaultEntry newVaultEntry)
+    {
+        Entries.Add(newVaultEntry);
     }
 }

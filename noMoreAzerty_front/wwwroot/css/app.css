@@ -1,10 +1,29 @@
-.vault-item {
+.vault-card {
+    padding: 16px;
+    border-radius: 14px;
+    border: 1px solid var(--mud-palette-divider);
     cursor: pointer;
-    transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    background-color: var(--mud-palette-background-paper);
+    transition:
+        background-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.15s ease,
+        border-color 0.2s ease;
 }
 
-.vault-item:hover {
+.vault-card:hover {
+    background-color: var(--mud-palette-action-hover);
+    box-shadow: var(--mud-elevation-4);
+    transform: translateY(-1px);
+}
+
+.vault-card.selected {
+    border-color: var(--mud-palette-primary);
     background-color: var(--mud-palette-primary-hover);
-    color: white;
-    box-shadow: 0 0 10px rgba(25, 118, 210, 0.4);
+    box-shadow: var(--mud-elevation-6);
+}
+
+.vault-card:focus-visible {
+    outline: 2px solid var(--mud-palette-primary);
+    outline-offset: 2px;
 }

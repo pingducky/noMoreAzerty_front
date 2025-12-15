@@ -7,31 +7,48 @@
 <PageTitle>My Vaults</PageTitle>
 
 <h1>My Vaults</h1>
+<MudContainer MaxWidth="MaxWidth.Medium">
 
-<MudContainer>
-    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="OpenCreateVaultDialog">Create vault</MudButton>
+    <MudButton Variant="Variant.Filled"
+               Color="Color.Primary"
+               OnClick="OpenCreateVaultDialog"
+               Class="mb-4">
+        Create vault
+    </MudButton>
 
     @if (vaults == null || !vaults.Any())
     {
-        <MudText Color="Color.Secondary">Create you first vault !</MudText>
+        <MudText Color="Color.Secondary">
+            Create your first vault !
+        </MudText>
     }
     else
     {
-        <MudContainer MaxWidth="MaxWidth.Medium">
-            <MudList T="VaultService.Vault" Dense="false">
-                @foreach (var vault in vaults)
-                {
-                    <MudListItem T="VaultService.Vault" Selected="@(selectedVault?.Id == vault.Id)"
-                                 OnClick="() => SelectVault(vault)"
-                                 Class="vault-list-item"
-                                 DisableRipple="false">
-                        <MudText>@vault.Name</MudText>
-                    </MudListItem>
-                }
-            </MudList>
-        </MudContainer>
+        <MudStack Spacing="2">
+            @foreach (var vault in vaults)
+            {
+                <MudPaper Elevation="1"
+                          Class="@($"vault-card {(selectedVault?.Id == vault.Id ? "selected" : "")}")"
+                          @onclick="() => SelectVault(vault)">
+
+                    <MudStack Row="true" AlignItems="AlignItems.Center">
+                        <MudText Typo="Typo.subtitle1">
+                            @vault.Name
+                        </MudText>
+
+                        <MudSpacer />
+
+                        <MudIconButton Color="Color.Error"
+                                       OnClick="@(e => DeleteVault(vault))"
+                                       Icon="@Icons.Material.Filled.Delete" />
+                    </MudStack>
+
+                </MudPaper>
+            }
+        </MudStack>
     }
 </MudContainer>
+
 
 @code {
     private List<VaultService.Vault> vaults = new();
@@ -53,10 +70,14 @@
         await OpenPasswordDialog(vault);
     }
 
-    private void CreateVault()
+    private void AddVault(VaultService.Vault newVault)
     {
-        // Logique pour créer un nouveau vault (à implémenter)
-        Console.WriteLine("Créer un nouveau vault");
+        vaults.Add(newVault);
+    }
+
+    private void DeleteVault(VaultService.Vault vault)
+    {
+        vaults.Remove(vault);
     }
 
     private async Task OpenCreateVaultDialog()
@@ -69,11 +90,6 @@
         var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true };
     
         DialogService.Show<CreateVaultDialog>("Create Vault", parameters, options);
-    }
-    
-    private void AddVault(VaultService.Vault newVault)
-    {
-        vaults.Add(newVault);
     }
 
     private async Task OpenPasswordDialog(VaultService.Vault vault)
