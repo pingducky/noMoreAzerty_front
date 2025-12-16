@@ -1,12 +1,69 @@
 ﻿<MudDialog>
-    <TitleContent>Create Vault</TitleContent>
+    <TitleContent>New Vault</TitleContent>
     <DialogContent>
-        <MudTextField Label="Vault Name" @bind-Value="VaultName" Required="true" />
-        <MudTextField Label="Password" @bind-Value="Password" InputType="InputType.Password" Required="true" />
+        <MudTextField Label="Name" 
+                      Variant="Variant.Outlined"
+                      Margin="Margin.Dense" 
+                      @bind-Value="VaultName" 
+                      Required="true" />
+        <MudTextField Label="Password"
+                      Value="@Password" 
+                      Variant="Variant.Outlined"
+                      Margin="Margin.Dense"
+                      ValueChanged="@(async (string value) => await OnPasswordInput(value))"
+                      Immediate="true"
+                      InputType="InputType.Password"
+                      Required="true" />
+        <MudProgressLinear Value="@PasswordStrength" Color="@PasswordStrengthColor" Style="margin-top:10px;" />
+
+<div style="margin-top:12px;">
+    <MudList Dense="true" T="object">
+        <MudListItem>
+            <MudIcon Icon="@GetIcon(HasMinLength)" Color="@GetColor(HasMinLength)" Style="vertical-align:middle" />
+            <span style="margin-left:8px; color:@(HasMinLength ? "#388e3c" : "#d32f2f")">
+                Au moins 8 caractères
+            </span>
+        </MudListItem>
+        <MudListItem>
+            <MudIcon Icon="@GetIcon(HasUppercase)" Color="@GetColor(HasUppercase)" Style="vertical-align:middle" />
+            <span style="margin-left:8px; color:@(HasUppercase ? "#388e3c" : "#d32f2f")">
+                1 majuscule
+            </span>
+        </MudListItem>
+        <MudListItem>
+            <MudIcon Icon="@GetIcon(HasLowercase)" Color="@GetColor(HasLowercase)" Style="vertical-align:middle" />
+            <span style="margin-left:8px; color:@(HasLowercase ? "#388e3c" : "#d32f2f")">
+                1 minuscule
+            </span>
+        </MudListItem>
+        <MudListItem>
+            <MudIcon Icon="@GetIcon(HasDigit)" Color="@GetColor(HasDigit)" Style="vertical-align:middle" />
+            <span style="margin-left:8px; color:@(HasDigit ? "#388e3c" : "#d32f2f")">
+                1 chiffre
+            </span>
+        </MudListItem>
+        <MudListItem>
+            <MudIcon Icon="@GetIcon(HasSpecial)" Color="@GetColor(HasSpecial)" Style="vertical-align:middle" />
+            <span style="margin-left:8px; color:@(HasSpecial ? "#388e3c" : "#d32f2f")">
+                1 caractère spécial
+            </span>
+        </MudListItem>
+    </MudList>
+</div>
+    
     </DialogContent>
     <DialogActions>
-        <MudButton OnClick="Save" Color="Color.Primary" Variant="Variant.Filled">Save</MudButton>
-        <MudButton OnClick="Cancel" Color="Color.Secondary" Variant="Variant.Outlined">Cancel</MudButton>
+        <MudButton OnClick="Save"
+                   Color="Color.Primary"
+                   Variant="Variant.Filled"
+                   Disabled="@( !IsPasswordValid || PasswordStrength < 50 )">
+            Save
+        </MudButton>
+        <MudButton OnClick="Cancel" 
+                   Color="Color.Secondary" 
+                   Variant="Variant.Outlined">
+            Cancel
+        </MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -14,8 +71,51 @@
     [CascadingParameter] IMudDialogInstance MudDialog { get; set; } = default!;
     [Parameter] public EventCallback<VaultService.Vault> OnSave { get; set; }
 
+    [Inject] IJSRuntime JS { get; set; } = default!;
+
     private string VaultName { get; set; } = string.Empty;
     private string Password { get; set; } = string.Empty;
+    private double PasswordStrength { get; set; } = 0;
+    private bool HasMinLength => Password.Length >= 8;
+    private bool HasUppercase => Password.Any(char.IsUpper);
+    private bool HasLowercase => Password.Any(char.IsLower);
+    private bool HasDigit => Password.Any(char.IsDigit);
+    private bool HasSpecial => Password.Any(ch =>
+        "!@#$%^&*()_+-=[]{}|;:'\",.<>?/\\`~".Contains(ch));
+
+    private bool IsPasswordValid =>
+        HasMinLength &&
+        HasUppercase &&
+        HasLowercase &&
+        HasDigit &&
+        HasSpecial;
+
+    private Color PasswordStrengthColor =>
+        PasswordStrength < 40 ? Color.Error :
+        PasswordStrength < 70 ? Color.Warning :
+        Color.Success;
+
+    private string GetIcon(bool valid) =>
+        valid ? Icons.Material.Filled.CheckCircle : Icons.Material.Filled.Cancel;
+
+    private Color GetColor(bool valid) =>
+        valid ? Color.Success : Color.Error;
+
+    private async Task OnPasswordInput(string password)
+    {
+        Password = password;
+
+        if (string.IsNullOrEmpty(password))
+        {
+            PasswordStrength = 0;
+            return;
+        }
+
+        PasswordStrength = await JS.InvokeAsync<double>(
+            "getPasswordStrength",
+            password
+        );
+    }
 
     private async Task Save()
     {

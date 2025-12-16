@@ -3,20 +3,32 @@
   "WorkspaceRootPath": "C:\\Users\\antho\\OneDrive\\Documents\\Cours\\M2\\Architecture .NET\\TP\\noMoreAzerty_front\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{3A55C46E-26D6-4ED3-8AE8-21A5CA1E2ABB}|noMoreAzerty_front\\noMoreAzerty_front.csproj|c:\\users\\antho\\onedrive\\documents\\cours\\m2\\architecture .net\\tp\\nomoreazerty_front\\nomoreazerty_front\\pages\\vaultentries.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{3A55C46E-26D6-4ED3-8AE8-21A5CA1E2ABB}|noMoreAzerty_front\\noMoreAzerty_front.csproj|solutionrelative:nomoreazerty_front\\pages\\vaultentries.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{3A55C46E-26D6-4ED3-8AE8-21A5CA1E2ABB}|noMoreAzerty_front\\noMoreAzerty_front.csproj|c:\\users\\antho\\onedrive\\documents\\cours\\m2\\architecture .net\\tp\\nomoreazerty_front\\nomoreazerty_front\\components\\vaultentrydialog.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{3A55C46E-26D6-4ED3-8AE8-21A5CA1E2ABB}|noMoreAzerty_front\\noMoreAzerty_front.csproj|solutionrelative:nomoreazerty_front\\components\\vaultentrydialog.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3A55C46E-26D6-4ED3-8AE8-21A5CA1E2ABB}|noMoreAzerty_front\\noMoreAzerty_front.csproj|c:\\users\\antho\\onedrive\\documents\\cours\\m2\\architecture .net\\tp\\nomoreazerty_front\\nomoreazerty_front\\components\\createvaultdialog.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{3A55C46E-26D6-4ED3-8AE8-21A5CA1E2ABB}|noMoreAzerty_front\\noMoreAzerty_front.csproj|solutionrelative:nomoreazerty_front\\components\\createvaultdialog.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{3A55C46E-26D6-4ED3-8AE8-21A5CA1E2ABB}|noMoreAzerty_front\\noMoreAzerty_front.csproj|c:\\users\\antho\\onedrive\\documents\\cours\\m2\\architecture .net\\tp\\nomoreazerty_front\\nomoreazerty_front\\pages\\vaults.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{3A55C46E-26D6-4ED3-8AE8-21A5CA1E2ABB}|noMoreAzerty_front\\noMoreAzerty_front.csproj|solutionrelative:nomoreazerty_front\\pages\\vaults.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{3A55C46E-26D6-4ED3-8AE8-21A5CA1E2ABB}|noMoreAzerty_front\\noMoreAzerty_front.csproj|c:\\users\\antho\\onedrive\\documents\\cours\\m2\\architecture .net\\tp\\nomoreazerty_front\\nomoreazerty_front\\wwwroot\\css\\app.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
-      "RelativeMoniker": "D:0:0:{3A55C46E-26D6-4ED3-8AE8-21A5CA1E2ABB}|noMoreAzerty_front\\noMoreAzerty_front.csproj|solutionrelative:nomoreazerty_front\\wwwroot\\css\\app.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+      "AbsoluteMoniker": "D:0:0:{3A55C46E-26D6-4ED3-8AE8-21A5CA1E2ABB}|noMoreAzerty_front\\noMoreAzerty_front.csproj|c:\\users\\antho\\onedrive\\documents\\cours\\m2\\architecture .net\\tp\\nomoreazerty_front\\nomoreazerty_front\\pages\\vaultentries.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{3A55C46E-26D6-4ED3-8AE8-21A5CA1E2ABB}|noMoreAzerty_front\\noMoreAzerty_front.csproj|solutionrelative:nomoreazerty_front\\pages\\vaultentries.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{3A55C46E-26D6-4ED3-8AE8-21A5CA1E2ABB}|noMoreAzerty_front\\noMoreAzerty_front.csproj|c:\\users\\antho\\onedrive\\documents\\cours\\m2\\architecture .net\\tp\\nomoreazerty_front\\nomoreazerty_front\\wwwroot\\index.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{3A55C46E-26D6-4ED3-8AE8-21A5CA1E2ABB}|noMoreAzerty_front\\noMoreAzerty_front.csproj|solutionrelative:nomoreazerty_front\\wwwroot\\index.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3A55C46E-26D6-4ED3-8AE8-21A5CA1E2ABB}|noMoreAzerty_front\\noMoreAzerty_front.csproj|c:\\users\\antho\\onedrive\\documents\\cours\\m2\\architecture .net\\tp\\nomoreazerty_front\\nomoreazerty_front\\wwwroot\\js\\zxcvbninterop.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{3A55C46E-26D6-4ED3-8AE8-21A5CA1E2ABB}|noMoreAzerty_front\\noMoreAzerty_front.csproj|solutionrelative:nomoreazerty_front\\wwwroot\\js\\zxcvbninterop.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3A55C46E-26D6-4ED3-8AE8-21A5CA1E2ABB}|noMoreAzerty_front\\noMoreAzerty_front.csproj|c:\\users\\antho\\onedrive\\documents\\cours\\m2\\architecture .net\\tp\\nomoreazerty_front\\nomoreazerty_front\\wwwroot\\css\\app.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{3A55C46E-26D6-4ED3-8AE8-21A5CA1E2ABB}|noMoreAzerty_front\\noMoreAzerty_front.csproj|solutionrelative:nomoreazerty_front\\wwwroot\\css\\app.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
     }
   ],
   "DocumentGroupContainers": [
@@ -26,7 +38,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 7,
+          "SelectedChildIndex": 4,
           "Children": [
             {
               "$type": "Bookmark",
@@ -46,55 +58,92 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "VaultEntryDialog.razor",
+              "DocumentMoniker": "C:\\Users\\antho\\OneDrive\\Documents\\Cours\\M2\\Architecture .NET\\TP\\noMoreAzerty_front\\noMoreAzerty_front\\Components\\VaultEntryDialog.razor",
+              "RelativeDocumentMoniker": "noMoreAzerty_front\\Components\\VaultEntryDialog.razor",
+              "ToolTip": "C:\\Users\\antho\\OneDrive\\Documents\\Cours\\M2\\Architecture .NET\\TP\\noMoreAzerty_front\\noMoreAzerty_front\\Components\\VaultEntryDialog.razor",
+              "RelativeToolTip": "noMoreAzerty_front\\Components\\VaultEntryDialog.razor",
+              "ViewState": "AgIAACEAAAAAAAAAAAAAACgAAAAmAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-16T08:16:07.014Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 3,
+              "Title": "VaultEntries.razor",
+              "DocumentMoniker": "C:\\Users\\antho\\OneDrive\\Documents\\Cours\\M2\\Architecture .NET\\TP\\noMoreAzerty_front\\noMoreAzerty_front\\Pages\\VaultEntries.razor",
+              "RelativeDocumentMoniker": "noMoreAzerty_front\\Pages\\VaultEntries.razor",
+              "ToolTip": "C:\\Users\\antho\\OneDrive\\Documents\\Cours\\M2\\Architecture .NET\\TP\\noMoreAzerty_front\\noMoreAzerty_front\\Pages\\VaultEntries.razor",
+              "RelativeToolTip": "noMoreAzerty_front\\Pages\\VaultEntries.razor",
+              "ViewState": "AgIAABUAAAAAAAAAAAAAAC8AAAAPAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-16T08:12:00.008Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Vaults.razor",
+              "DocumentMoniker": "C:\\Users\\antho\\OneDrive\\Documents\\Cours\\M2\\Architecture .NET\\TP\\noMoreAzerty_front\\noMoreAzerty_front\\Pages\\Vaults.razor",
+              "RelativeDocumentMoniker": "noMoreAzerty_front\\Pages\\Vaults.razor",
+              "ToolTip": "C:\\Users\\antho\\OneDrive\\Documents\\Cours\\M2\\Architecture .NET\\TP\\noMoreAzerty_front\\noMoreAzerty_front\\Pages\\Vaults.razor",
+              "RelativeToolTip": "noMoreAzerty_front\\Pages\\Vaults.razor",
+              "ViewState": "AgIAABUAAAAAAAAAAAAAACUAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-15T14:02:43.534Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "app.css",
+              "DocumentMoniker": "C:\\Users\\antho\\OneDrive\\Documents\\Cours\\M2\\Architecture .NET\\TP\\noMoreAzerty_front\\noMoreAzerty_front\\wwwroot\\css\\app.css",
+              "RelativeDocumentMoniker": "noMoreAzerty_front\\wwwroot\\css\\app.css",
+              "ToolTip": "C:\\Users\\antho\\OneDrive\\Documents\\Cours\\M2\\Architecture .NET\\TP\\noMoreAzerty_front\\noMoreAzerty_front\\wwwroot\\css\\app.css",
+              "RelativeToolTip": "noMoreAzerty_front\\wwwroot\\css\\app.css",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-12-15T14:03:08.293Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "CreateVaultDialog.razor",
+              "DocumentMoniker": "C:\\Users\\antho\\OneDrive\\Documents\\Cours\\M2\\Architecture .NET\\TP\\noMoreAzerty_front\\noMoreAzerty_front\\Components\\CreateVaultDialog.razor",
+              "RelativeDocumentMoniker": "noMoreAzerty_front\\Components\\CreateVaultDialog.razor",
+              "ToolTip": "C:\\Users\\antho\\OneDrive\\Documents\\Cours\\M2\\Architecture .NET\\TP\\noMoreAzerty_front\\noMoreAzerty_front\\Components\\CreateVaultDialog.razor",
+              "RelativeToolTip": "noMoreAzerty_front\\Components\\CreateVaultDialog.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-15T13:49:33.041Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
               "Title": "index.html",
               "DocumentMoniker": "C:\\Users\\antho\\OneDrive\\Documents\\Cours\\M2\\Architecture .NET\\TP\\noMoreAzerty_front\\noMoreAzerty_front\\wwwroot\\index.html",
               "RelativeDocumentMoniker": "noMoreAzerty_front\\wwwroot\\index.html",
               "ToolTip": "C:\\Users\\antho\\OneDrive\\Documents\\Cours\\M2\\Architecture .NET\\TP\\noMoreAzerty_front\\noMoreAzerty_front\\wwwroot\\index.html",
               "RelativeToolTip": "noMoreAzerty_front\\wwwroot\\index.html",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACcAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
               "WhenOpened": "2025-12-15T10:26:24.515Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "app.css",
-              "DocumentMoniker": "C:\\Users\\antho\\OneDrive\\Documents\\Cours\\M2\\Architecture .NET\\TP\\noMoreAzerty_front\\noMoreAzerty_front\\wwwroot\\css\\app.css",
-              "RelativeDocumentMoniker": "noMoreAzerty_front\\wwwroot\\css\\app.css",
-              "ToolTip": "C:\\Users\\antho\\OneDrive\\Documents\\Cours\\M2\\Architecture .NET\\TP\\noMoreAzerty_front\\noMoreAzerty_front\\wwwroot\\css\\app.css",
-              "RelativeToolTip": "noMoreAzerty_front\\wwwroot\\css\\app.css",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAdAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2025-12-15T10:02:43.866Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Vaults.razor",
-              "DocumentMoniker": "C:\\Users\\antho\\OneDrive\\Documents\\Cours\\M2\\Architecture .NET\\TP\\noMoreAzerty_front\\noMoreAzerty_front\\Pages\\Vaults.razor",
-              "RelativeDocumentMoniker": "noMoreAzerty_front\\Pages\\Vaults.razor",
-              "ToolTip": "C:\\Users\\antho\\OneDrive\\Documents\\Cours\\M2\\Architecture .NET\\TP\\noMoreAzerty_front\\noMoreAzerty_front\\Pages\\Vaults.razor",
-              "RelativeToolTip": "noMoreAzerty_front\\Pages\\Vaults.razor",
-              "ViewState": "AgIAABAAAAAAAAAAAAAkwBoAAAARAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-30T14:16:53.138Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "VaultEntries.razor",
-              "DocumentMoniker": "C:\\Users\\antho\\OneDrive\\Documents\\Cours\\M2\\Architecture .NET\\TP\\noMoreAzerty_front\\noMoreAzerty_front\\Pages\\VaultEntries.razor",
-              "RelativeDocumentMoniker": "noMoreAzerty_front\\Pages\\VaultEntries.razor",
-              "ToolTip": "C:\\Users\\antho\\OneDrive\\Documents\\Cours\\M2\\Architecture .NET\\TP\\noMoreAzerty_front\\noMoreAzerty_front\\Pages\\VaultEntries.razor",
-              "RelativeToolTip": "noMoreAzerty_front\\Pages\\VaultEntries.razor",
-              "ViewState": "AgIAAA8AAAAAAAAAAAAAAB0AAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-30T13:11:41.19Z",
-              "EditorCaption": ""
+              "DocumentIndex": 5,
+              "Title": "zxcvbnInterop.js",
+              "DocumentMoniker": "C:\\Users\\antho\\OneDrive\\Documents\\Cours\\M2\\Architecture .NET\\TP\\noMoreAzerty_front\\noMoreAzerty_front\\wwwroot\\js\\zxcvbnInterop.js",
+              "RelativeDocumentMoniker": "noMoreAzerty_front\\wwwroot\\js\\zxcvbnInterop.js",
+              "ToolTip": "C:\\Users\\antho\\OneDrive\\Documents\\Cours\\M2\\Architecture .NET\\TP\\noMoreAzerty_front\\noMoreAzerty_front\\wwwroot\\js\\zxcvbnInterop.js",
+              "RelativeToolTip": "noMoreAzerty_front\\wwwroot\\js\\zxcvbnInterop.js",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAACAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2025-12-15T13:59:11.17Z"
             }
           ]
         }

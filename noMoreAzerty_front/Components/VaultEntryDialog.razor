@@ -1,0 +1,197 @@
+﻿<MudDialog MaxWidth="MaxWidth.Medium" FullWidth="true">
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            @(IsEdit ? "Edit Entry" : "New Entry")
+        </MudText>
+    </TitleContent>
+
+    <DialogContent>
+
+        <!-- GENERAL -->
+        <MudCard Class="mb-2" Elevation="0" Outlined="true">
+            <MudCardContent>
+                <MudText Typo="Typo.subtitle1" Class="mb-1">General</MudText>
+
+                <MudTextField Variant="Variant.Outlined"
+                              Label="Title"
+                              Margin="Margin.Dense"
+                              @bind-Value="Title"
+                              Required="true"
+                              FullWidth />
+            </MudCardContent>
+        </MudCard>
+
+        <!-- CREDENTIALS -->
+        <MudCard Class="mb-3" Elevation="0" Outlined="true">
+            <MudCardContent>
+                <MudText Typo="Typo.subtitle1" Class="mb-2">Credentials</MudText>
+
+                <MudGrid Spacing="2">
+                    <MudItem xs="12" sm="6">
+                        <MudTextField Variant="Variant.Outlined"
+                                      Margin="Margin.Dense"
+                                      Label="Username"
+                                      @bind-Value="Username"
+                                      FullWidth />
+                    </MudItem>
+
+                    <MudItem xs="12" sm="6">
+                        <MudTextField Variant="Variant.Outlined"
+                                      Label="Password"
+                                      Value="@Password" 
+                                      Margin="Margin.Dense"
+                                      ValueChanged="@(async (string value) => await OnPasswordInput(value))"
+                                      Immediate="true"
+                                      InputType="InputType.Password"
+                                      Required="true"
+                                      FullWidth />
+                        <MudProgressLinear Value="@PasswordStrength" Color="@PasswordStrengthColor" Style="margin-top:10px;" />
+                    </MudItem>
+
+                    <MudItem xs="12">
+                        <MudTextField Variant="Variant.Outlined"
+                                      Label="URL"
+                                      Margin="Margin.Dense"
+                                      @bind-Value="Url"
+                                      FullWidth />
+                    </MudItem>
+                </MudGrid>
+            </MudCardContent>
+        </MudCard>
+
+        <!-- NOTES -->
+        <MudCard Class="mb-3" Elevation="0" Outlined="true">
+            <MudCardContent>
+                <MudText Typo="Typo.subtitle1" Class="mb-2">Notes</MudText>
+
+                <MudTextField Variant="Variant.Outlined"
+                              Margin="Margin.Dense"
+                              Label="Commentary"
+                              @bind-Value="Commentary"
+                              Lines="4"
+                              FullWidth />
+            </MudCardContent>
+        </MudCard>
+
+        @if (IsEdit)
+        {
+            <MudCard Elevation="0" Outlined="true">
+                <MudCardContent>
+                    <MudText Typo="Typo.subtitle1" Class="mb-2">Metadata</MudText>
+
+                    <MudStack Spacing="1">
+                        <MudText Typo="Typo.caption">
+                            Created at: @CreatedAt.ToLocalTime():g
+                        </MudText>
+
+                        <MudText Typo="Typo.caption">
+                            Last modified: @UpdatedAt.ToLocalTime():g
+                        </MudText>
+                    </MudStack>
+                </MudCardContent>
+            </MudCard>
+        }
+
+    </DialogContent>
+
+    <DialogActions>
+        <MudSpacer />
+        <MudButton OnClick="Cancel" Variant="Variant.Text">Cancel</MudButton>
+        <MudButton OnClick="Save"
+                   Color="Color.Primary"
+                   Variant="Variant.Filled"
+                   Disabled="@(!IsValid)">
+            @(IsEdit ? "Update" : "Save")
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] IMudDialogInstance MudDialog { get; set; } = default!;
+    [Parameter] public EventCallback<VaultEntryService.VaultEntry> OnSave { get; set; }
+    [Parameter] public VaultEntryService.VaultEntry? Entry { get; set; }
+    private bool IsEdit => Entry != null;
+
+    private string Title { get; set; } = string.Empty;
+    private string Username { get; set; } = string.Empty;
+    private string Password { get; set; } = string.Empty;
+    private string Url { get; set; } = string.Empty;
+    private string Commentary { get; set; } = string.Empty;
+
+    private DateTime CreatedAt { get; set; }
+    private DateTime UpdatedAt { get; set; }
+
+    private bool IsValid =>
+        !string.IsNullOrWhiteSpace(Title) &&
+        !string.IsNullOrWhiteSpace(Password);
+
+    private string DerivedKey { get; set; } = string.Empty;
+    private string Salt { get; set; } = string.Empty;
+    
+    private double PasswordStrength { get; set; } = 0;
+    
+    private Color PasswordStrengthColor =>
+        PasswordStrength < 40 ? Color.Error :
+        PasswordStrength < 70 ? Color.Warning :
+        Color.Success;
+
+    [Inject] IJSRuntime JS { get; set; } = default!;
+
+    protected override void OnInitialized()
+    {
+        if (Entry != null)
+        {
+            Title = Entry.CipherTitle;
+            Username = Entry.CipherUsername;
+            Password = Entry.CipherPassword;
+            Url = Entry.CipherUrl;
+            Commentary = Entry.CipherCommentary;
+
+            CreatedAt = Entry.CreatedAt ?? DateTime.Now;
+            UpdatedAt = Entry.UpdatedAt ?? DateTime.Now;
+        }
+    }
+
+    private async Task OnPasswordInput(string password)
+    {
+        Password = password;
+
+        if (string.IsNullOrEmpty(password))
+        {
+            PasswordStrength = 0;
+            return;
+        }
+
+        PasswordStrength = await JS.InvokeAsync<double>(
+            "getPasswordStrength",
+            password
+        );
+    }
+
+    private async Task Save()
+    {
+        if (!string.IsNullOrWhiteSpace(Title) && !string.IsNullOrWhiteSpace(Password))
+        {
+            var entry = Entry ?? new VaultEntryService.VaultEntry
+                {
+                    Id = Guid.NewGuid(),
+                    CreatedAt = DateTime.UtcNow
+                };
+
+            entry.CipherTitle = Title;
+            entry.CipherUsername = Username;
+            entry.CipherPassword = Password;
+            entry.CipherUrl = Url;
+            entry.CipherCommentary = Commentary;
+            entry.UpdatedAt = DateTime.UtcNow;
+
+            await OnSave.InvokeAsync(entry);
+            MudDialog.Close();
+        }
+    }
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+}

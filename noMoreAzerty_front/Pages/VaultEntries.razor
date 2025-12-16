@@ -26,7 +26,8 @@
             @foreach (var entry in Entries)
             {
                 <MudPaper Elevation="1"
-                          Class="@($"vault-card {(selectedEntry?.Id == entry.Id ? "selected" : "")}")">
+                          @onclick="() => SelectVaultEntry(entry)"
+                          Class="@($"vault-card {(SelectedEntry?.Id == entry.Id ? "selected" : "")}")">
 
                     <MudStack Row="true" AlignItems="AlignItems.Center">
                         <MudText Typo="Typo.subtitle1">
@@ -36,6 +37,7 @@
                         <MudSpacer />
 
                         <MudIconButton Color="Color.Error"
+                                       OnClick="@(e => DeleteVaultEntry(entry))"
                                        Icon="@Icons.Material.Filled.Delete" />
                     </MudStack>
 
@@ -49,7 +51,7 @@
     [Parameter] public Guid VaultId { get; set; }
     private VaultService.Vault? Vault { get; set; }
     private List<VaultEntryService.VaultEntry>? Entries { get; set; }
-    private VaultEntryService.VaultEntry? selectedEntry;
+    private VaultEntryService.VaultEntry? SelectedEntry;
 
     protected override async Task OnInitializedAsync()
     {
@@ -72,7 +74,7 @@
             //Entries = await VaultEntryService.GetEntriesByVaultIdAsync(VaultId);
 
             // fake data
-            Entries = Enumerable.Range(1, 5).Select(i => new VaultEntryService.VaultEntry { Id = new Guid(), CipherTitle = $"Entry {i} in {Vault.Name}" }).ToList();
+            Entries = Enumerable.Range(1, 5).Select(i => new VaultEntryService.VaultEntry { Id = Guid.NewGuid(), CipherTitle = $"Entry {i} in {Vault.Name}" }).ToList();
 
             // TODO : Générer la clé symétrique
 
@@ -81,20 +83,52 @@
         }
     }
 
+    private async Task SelectVaultEntry(VaultEntryService.VaultEntry vaultEntry)
+    {
+        SelectedEntry = vaultEntry;
+        await OpenEditVaultEntryDialog(vaultEntry);
+    }
+
     private async Task OpenCreateVaultEntryDialog()
     {
         var parameters = new DialogParameters
         {
-            { "OnSave", EventCallback.Factory.Create<VaultEntryService.VaultEntry>(this, AddVault) }
+            { "OnSave", EventCallback.Factory.Create<VaultEntryService.VaultEntry>(this, AddEntry) }
         };
 
         var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true };
 
-        DialogService.Show<CreateVaultEntryDialog>("Create Entry", parameters, options);
+        DialogService.Show<VaultEntryDialog>("Create Entry", parameters, options);
     }
 
-    private void AddVault(VaultEntryService.VaultEntry newVaultEntry)
+    private async Task OpenEditVaultEntryDialog(VaultEntryService.VaultEntry entry)
+    {
+        var parameters = new DialogParameters
+        {
+            { "Entry", entry },
+            { "OnSave", EventCallback.Factory.Create<VaultEntryService.VaultEntry>(this, UpdateEntry) }
+        };
+
+        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium, FullWidth = true };
+
+        DialogService.Show<VaultEntryDialog>("Edit Entry", parameters, options);
+    }
+
+    private void AddEntry(VaultEntryService.VaultEntry newVaultEntry)
     {
         Entries.Add(newVaultEntry);
     }
+
+    private void UpdateEntry(VaultEntryService.VaultEntry updatedEntry)
+    {
+        var index = Entries.FindIndex(e => e.Id == updatedEntry.Id);
+        if (index != -1)
+            Entries[index] = updatedEntry;
+    }
+
+    private void DeleteVaultEntry(VaultEntryService.VaultEntry vaultEntry)
+    {
+        Entries.Remove(vaultEntry);
+    }
+
 }
