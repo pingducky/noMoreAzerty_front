@@ -64,7 +64,7 @@
               "RelativeDocumentMoniker": "noMoreAzerty_front\\Components\\VaultEntryDialog.razor",
               "ToolTip": "C:\\Users\\antho\\OneDrive\\Documents\\Cours\\M2\\Architecture .NET\\TP\\noMoreAzerty_front\\noMoreAzerty_front\\Components\\VaultEntryDialog.razor",
               "RelativeToolTip": "noMoreAzerty_front\\Components\\VaultEntryDialog.razor",
-              "ViewState": "AgIAACEAAAAAAAAAAAAAACgAAAAmAAAAAAAAAA==",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAAALoAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-12-16T08:16:07.014Z",
               "EditorCaption": ""
@@ -79,8 +79,7 @@
               "RelativeToolTip": "noMoreAzerty_front\\Pages\\VaultEntries.razor",
               "ViewState": "AgIAABUAAAAAAAAAAAAAAC8AAAAPAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-12-16T08:12:00.008Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-16T08:12:00.008Z"
             },
             {
               "$type": "Document",
@@ -97,6 +96,19 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "CreateVaultDialog.razor",
+              "DocumentMoniker": "C:\\Users\\antho\\OneDrive\\Documents\\Cours\\M2\\Architecture .NET\\TP\\noMoreAzerty_front\\noMoreAzerty_front\\Components\\CreateVaultDialog.razor",
+              "RelativeDocumentMoniker": "noMoreAzerty_front\\Components\\CreateVaultDialog.razor",
+              "ToolTip": "C:\\Users\\antho\\OneDrive\\Documents\\Cours\\M2\\Architecture .NET\\TP\\noMoreAzerty_front\\noMoreAzerty_front\\Components\\CreateVaultDialog.razor",
+              "RelativeToolTip": "noMoreAzerty_front\\Components\\CreateVaultDialog.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-15T13:49:33.041Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 6,
               "Title": "app.css",
               "DocumentMoniker": "C:\\Users\\antho\\OneDrive\\Documents\\Cours\\M2\\Architecture .NET\\TP\\noMoreAzerty_front\\noMoreAzerty_front\\wwwroot\\css\\app.css",
@@ -109,19 +121,6 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "CreateVaultDialog.razor",
-              "DocumentMoniker": "C:\\Users\\antho\\OneDrive\\Documents\\Cours\\M2\\Architecture .NET\\TP\\noMoreAzerty_front\\noMoreAzerty_front\\Components\\CreateVaultDialog.razor",
-              "RelativeDocumentMoniker": "noMoreAzerty_front\\Components\\CreateVaultDialog.razor",
-              "ToolTip": "C:\\Users\\antho\\OneDrive\\Documents\\Cours\\M2\\Architecture .NET\\TP\\noMoreAzerty_front\\noMoreAzerty_front\\Components\\CreateVaultDialog.razor",
-              "RelativeToolTip": "noMoreAzerty_front\\Components\\CreateVaultDialog.razor",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAArAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-12-15T13:49:33.041Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 4,
               "Title": "index.html",
               "DocumentMoniker": "C:\\Users\\antho\\OneDrive\\Documents\\Cours\\M2\\Architecture .NET\\TP\\noMoreAzerty_front\\noMoreAzerty_front\\wwwroot\\index.html",
@@ -130,8 +129,7 @@
               "RelativeToolTip": "noMoreAzerty_front\\wwwroot\\index.html",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAACcAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
-              "WhenOpened": "2025-12-15T10:26:24.515Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-15T10:26:24.515Z"
             },
             {
               "$type": "Document",

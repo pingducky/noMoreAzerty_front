@@ -7,7 +7,7 @@
 
     <DialogContent>
 
-        <!-- GENERAL -->
+        <!-- Titre -->
         <MudCard Class="mb-2" Elevation="0" Outlined="true">
             <MudCardContent>
                 <MudText Typo="Typo.subtitle1" Class="mb-1">General</MudText>
@@ -21,7 +21,7 @@
             </MudCardContent>
         </MudCard>
 
-        <!-- CREDENTIALS -->
+        <!-- Identifiants -->
         <MudCard Class="mb-3" Elevation="0" Outlined="true">
             <MudCardContent>
                 <MudText Typo="Typo.subtitle1" Class="mb-2">Credentials</MudText>
@@ -36,18 +36,29 @@
                     </MudItem>
 
                     <MudItem xs="12" sm="6">
-                        <MudTextField Variant="Variant.Outlined"
-                                      Label="Password"
-                                      Value="@Password" 
-                                      Margin="Margin.Dense"
-                                      ValueChanged="@(async (string value) => await OnPasswordInput(value))"
-                                      Immediate="true"
-                                      InputType="InputType.Password"
-                                      Required="true"
-                                      FullWidth />
+                        <div class="d-flex align-items-center">
+                            <MudTextField @ref="_passwordField"
+                                          Variant="Variant.Outlined"
+                                          Label="Password"
+                                          Value="@Password"
+                                          Margin="Margin.Dense"
+                                          ValueChanged="@(async (string value) => await OnPasswordInput(value))"
+                                          Immediate="true"
+                                          InputType="@(_showPassword ? InputType.Text : InputType.Password)"
+                                          Required="true"
+                                          FullWidth
+                                          Adornment="Adornment.End"
+                                          AdornmentIcon="@(_showPassword ? Icons.Material.Filled.VisibilityOff : Icons.Material.Filled.Visibility)"
+                                          OnAdornmentClick="@ToggleShowPassword" />
+
+                            <MudIconButton Icon="@Icons.Material.Filled.Casino"
+                                           OnClick="@GeneratePassword"
+                                           Color="Color.Default"
+                                           Size="Size.Small"
+                                           Class="ml-2" />
+                        </div>
                         <MudProgressLinear Value="@PasswordStrength" Color="@PasswordStrengthColor" Style="margin-top:10px;" />
                     </MudItem>
-
                     <MudItem xs="12">
                         <MudTextField Variant="Variant.Outlined"
                                       Label="URL"
@@ -59,7 +70,7 @@
             </MudCardContent>
         </MudCard>
 
-        <!-- NOTES -->
+        <!-- Commentaire -->
         <MudCard Class="mb-3" Elevation="0" Outlined="true">
             <MudCardContent>
                 <MudText Typo="Typo.subtitle1" Class="mb-2">Notes</MudText>
@@ -72,20 +83,19 @@
                               FullWidth />
             </MudCardContent>
         </MudCard>
-
+        
+        <!-- Si édit, dates create / edit -->
         @if (IsEdit)
         {
             <MudCard Elevation="0" Outlined="true">
                 <MudCardContent>
-                    <MudText Typo="Typo.subtitle1" Class="mb-2">Metadata</MudText>
-
                     <MudStack Spacing="1">
                         <MudText Typo="Typo.caption">
-                            Created at: @CreatedAt.ToLocalTime():g
+                            Created at: @CreatedAt.ToLocalTime()
                         </MudText>
 
                         <MudText Typo="Typo.caption">
-                            Last modified: @UpdatedAt.ToLocalTime():g
+                            Modified: @UpdatedAt.ToLocalTime()
                         </MudText>
                     </MudStack>
                 </MudCardContent>
@@ -136,6 +146,27 @@
         Color.Success;
 
     [Inject] IJSRuntime JS { get; set; } = default!;
+    private bool _showPassword = false;
+    private MudTextField<string>? _passwordField;
+
+    private void ToggleShowPassword()
+    {
+        _showPassword = !_showPassword;
+    }
+
+    private async Task GeneratePassword()
+    {
+        var chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*";
+        var random = new Random();
+        var generated = new string(Enumerable.Repeat(chars, 16)
+            .Select(s => s[random.Next(s.Length)]).ToArray());
+
+        await OnPasswordInput(generated);
+
+        // Refocus pour forcer la validation et enlever l'avertissement
+        if (_passwordField != null)
+            await _passwordField.FocusAsync();
+    }
 
     protected override void OnInitialized()
     {

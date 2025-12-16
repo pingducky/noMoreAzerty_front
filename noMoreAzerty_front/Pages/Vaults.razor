@@ -57,10 +57,10 @@
 
     protected override async Task OnInitializedAsync()
     {
-        //vaults = await VaultService.GetAllVaultsAsync();
+        vaults = await VaultService.GetAllVaultsAsync();
     
         // generate false vaults
-        vaults = Enumerable.Range(1, 5).Select(i => new VaultService.Vault { Id = Guid.NewGuid(), Name = $"Vault {i}" }).ToList();
+        //vaults = Enumerable.Range(1, 5).Select(i => new VaultService.Vault { Id = Guid.NewGuid(), Name = $"Vault {i}" }).ToList();
 
     }
 

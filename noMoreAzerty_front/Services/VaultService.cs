@@ -16,7 +16,7 @@ public class VaultService
 
     public async Task<List<Vault>> GetAllVaultsAsync()
     {
-        var response = await _httpClient.GetAsync("api/vault");
+        var response = await _httpClient.GetAsync("api/vault/my");
         response.EnsureSuccessStatusCode();
         var content = await response.Content.ReadAsStringAsync();
         return JsonSerializer.Deserialize<List<Vault>>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
