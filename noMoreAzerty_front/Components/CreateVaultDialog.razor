@@ -1,4 +1,7 @@
-﻿<MudDialog>
+﻿@using static noMoreAzerty_front.Services.VaultService
+@inject VaultService VaultService
+
+<MudDialog>
     <TitleContent>New Vault</TitleContent>
     <DialogContent>
         <MudTextField Label="Name" 
@@ -13,7 +16,10 @@
                       ValueChanged="@(async (string value) => await OnPasswordInput(value))"
                       Immediate="true"
                       InputType="InputType.Password"
-                      Required="true" />
+                      Required="true"
+                      Adornment="Adornment.End"
+                      AdornmentIcon="@(_showPassword ? Icons.Material.Filled.VisibilityOff : Icons.Material.Filled.Visibility)"
+                      OnAdornmentClick="@ToggleShowPassword" />
         <MudProgressLinear Value="@PasswordStrength" Color="@PasswordStrengthColor" Style="margin-top:10px;" />
 
 <div style="margin-top:12px;">
@@ -53,16 +59,15 @@
     
     </DialogContent>
     <DialogActions>
+        <MudButton OnClick="Cancel"
+                   Variant="Variant.Text">
+            Cancel
+        </MudButton>
         <MudButton OnClick="Save"
                    Color="Color.Primary"
                    Variant="Variant.Filled"
                    Disabled="@( !IsPasswordValid || PasswordStrength < 50 )">
             Save
-        </MudButton>
-        <MudButton OnClick="Cancel" 
-                   Color="Color.Secondary" 
-                   Variant="Variant.Outlined">
-            Cancel
         </MudButton>
     </DialogActions>
 </MudDialog>
@@ -82,6 +87,7 @@
     private bool HasDigit => Password.Any(char.IsDigit);
     private bool HasSpecial => Password.Any(ch =>
         "!@#$%^&*()_+-=[]{}|;:'\",.<>?/\\`~".Contains(ch));
+    private bool _showPassword = false;
 
     private bool IsPasswordValid =>
         HasMinLength &&
@@ -117,17 +123,32 @@
         );
     }
 
+    private void ToggleShowPassword()
+    {
+        _showPassword = !_showPassword;
+    }
+
     private async Task Save()
     {
         if (!string.IsNullOrWhiteSpace(VaultName) && !string.IsNullOrWhiteSpace(Password))
         {
-            var newVault = new VaultService.Vault
-            {
-                Id = Guid.NewGuid(),
-                Name = VaultName
-            };
+            // Appel JS pour générer un salt aléatoire de 32 octets
+            var salt = await JS.InvokeAsync<string>("generateSalt", 32);
 
-            await OnSave.InvokeAsync(newVault);
+            CreateVaultRequestDto createVaultRequestDto = new CreateVaultRequestDto
+                {
+                    Name = VaultName,
+                    DerivedPassword = Password,
+                    PasswordSalt = salt
+                };
+
+            VaultService.CreateVaultAsync(createVaultRequestDto);
+
+            await OnSave.InvokeAsync(new Vault()
+            {
+                Name = VaultName
+            });
+
             MudDialog.Close();
         }
     }

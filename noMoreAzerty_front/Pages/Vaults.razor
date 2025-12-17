@@ -1,22 +1,36 @@
 ﻿@using Microsoft.AspNetCore.Authorization
+@using static noMoreAzerty_front.Services.VaultService
 @inject VaultService VaultService
 @inject IDialogService DialogService
-@page "/vaults"
+@page "/"
 @attribute [Authorize]
 
 <PageTitle>My Vaults</PageTitle>
 
-<h1>My Vaults</h1>
 <MudContainer MaxWidth="MaxWidth.Medium">
 
-    <MudButton Variant="Variant.Filled"
-               Color="Color.Primary"
-               OnClick="OpenCreateVaultDialog"
-               Class="mb-4">
-        Create vault
-    </MudButton>
+    <MudStack Row="true"
+              AlignItems="AlignItems.Center"
+              Justify="Justify.SpaceBetween"
+              Class="mb-4 w-100">
+        <MudText Typo="Typo.h4">
+            My Vaults
+        </MudText>
+        <MudButton StartIcon="@Icons.Material.Filled.Add"
+                   Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   OnClick="OpenCreateVaultDialog">
+            New vault
+        </MudButton>
+    </MudStack>
 
-    @if (vaults == null || !vaults.Any())
+    @if (vaults == null)
+    {
+        <MudText Color="Color.Secondary">
+            Loading vaults...
+        </MudText>
+    }
+    else if (!vaults.Any())
     {
         <MudText Color="Color.Secondary">
             Create your first vault !
@@ -58,7 +72,6 @@
     protected override async Task OnInitializedAsync()
     {
         vaults = await VaultService.GetAllVaultsAsync();
-    
         // generate false vaults
         //vaults = Enumerable.Range(1, 5).Select(i => new VaultService.Vault { Id = Guid.NewGuid(), Name = $"Vault {i}" }).ToList();
 

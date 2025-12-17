@@ -8,9 +8,20 @@
 <PageTitle>Vault Entries</PageTitle>
 
 <MudContainer>
-    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="OpenCreateVaultEntryDialog">Create entry</MudButton>
-
-   <h1>Entries for Vault: @Vault?.Name</h1>
+    <MudStack Row="true"
+              AlignItems="AlignItems.Center"
+              Justify="Justify.SpaceBetween"
+              Class="mb-4 w-100">
+        <MudText Typo="Typo.h4">
+            @Vault?.Name
+        </MudText>
+        <MudButton StartIcon="@Icons.Material.Filled.Add"
+                   Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   OnClick="OpenCreateVaultEntryDialog">
+            New entry
+        </MudButton>
+    </MudStack>
 
     @if (Vault == null)
     {

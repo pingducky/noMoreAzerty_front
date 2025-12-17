@@ -11,7 +11,14 @@
         <LoginDisplay/>
     </MudAppBar>
     <MudDrawer Open="true">
-        <NavMenu />
+        <MudPaper Width="100%" Height="100%" Class="py-3" Elevation="0">
+            <MudNavMenu>
+                <MudText Typo="Typo.h6" Class="px-4">No More Azerty</MudText>
+                <MudText Typo="Typo.body2" Class="px-4 mud-text-secondary">We need to stop azerty</MudText>
+                <MudDivider Class="my-2" />
+                <MudNavLink Class="pa-2 mt-n2" Icon="@Icons.Material.Filled.Lock" Href="/">Vaults</MudNavLink>
+            </MudNavMenu>
+        </MudPaper>
     </MudDrawer>
     <MudMainContent>
         <MudContainer MaxWidth="MaxWidth.Medium" Class="pa-4">
