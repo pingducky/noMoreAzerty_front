@@ -131,7 +131,7 @@
     private async Task Save()
     {
         if (!string.IsNullOrWhiteSpace(VaultName) && !string.IsNullOrWhiteSpace(Password))
-        {
+        { 
             // Appel JS pour générer un salt aléatoire de 32 octets
             var salt = await JS.InvokeAsync<string>("generateSalt", 32);
 
@@ -142,17 +142,23 @@
                     PasswordSalt = salt
                 };
 
-            VaultService.CreateVaultAsync(createVaultRequestDto);
+            // TODO : Test stockage mdp et salt pour chiffrement déchiffrement
+            // Dérivation del a clé de chiffrement
+            //var key = await JS.InvokeAsync<string>("deriveKey", Password, salt);
+            VaultService.Password = Password;
+            VaultService.Salt = salt;
+            
+            // Debug
+            Console.WriteLine("Mdp : " + VaultService.Password + "\n Salt : " + VaultService.Salt);
 
-            await OnSave.InvokeAsync(new Vault()
-            {
-                Name = VaultName
-            });
+            Vault vault = await VaultService.CreateVaultAsync(createVaultRequestDto);
+
+            await OnSave.InvokeAsync(vault);
 
             MudDialog.Close();
         }
     }
-
+    
     private void Cancel()
     {
         MudDialog.Cancel();

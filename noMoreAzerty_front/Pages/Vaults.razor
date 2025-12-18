@@ -24,7 +24,7 @@
         </MudButton>
     </MudStack>
 
-    @if (vaults == null)
+    @if (isLoading)
     {
         <MudText Color="Color.Secondary">
             Loading vaults...
@@ -33,7 +33,7 @@
     else if (!vaults.Any())
     {
         <MudText Color="Color.Secondary">
-            Create your first vault !
+            No vault find !
         </MudText>
     }
     else
@@ -69,12 +69,13 @@
 
     private VaultService.Vault? selectedVault;
 
+    private bool isLoading { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
+        isLoading = true;
         vaults = await VaultService.GetAllVaultsAsync();
-        // generate false vaults
-        //vaults = Enumerable.Range(1, 5).Select(i => new VaultService.Vault { Id = Guid.NewGuid(), Name = $"Vault {i}" }).ToList();
-
+        isLoading = false;
     }
 
     private async Task SelectVault(VaultService.Vault vault)

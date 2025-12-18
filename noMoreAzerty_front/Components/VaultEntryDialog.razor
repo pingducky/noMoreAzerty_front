@@ -1,4 +1,7 @@
-﻿<MudDialog MaxWidth="MaxWidth.Medium" FullWidth="true">
+﻿@inject VaultEntryService VaultEntryService
+@inject VaultService VaultService
+
+<MudDialog MaxWidth="MaxWidth.Medium" FullWidth="true">
     <TitleContent>
         <MudText Typo="Typo.h6">
             @(IsEdit ? "Edit Entry" : "New Entry")
@@ -117,6 +120,7 @@
 </MudDialog>
 
 @code {
+    [Inject] IJSRuntime JS { get; set; } = default!;
     [CascadingParameter] IMudDialogInstance MudDialog { get; set; } = default!;
     [Parameter] public EventCallback<VaultEntryService.VaultEntry> OnSave { get; set; }
     [Parameter] public VaultEntryService.VaultEntry? Entry { get; set; }
@@ -137,17 +141,31 @@
 
     private string DerivedKey { get; set; } = string.Empty;
     private string Salt { get; set; } = string.Empty;
-    
+
     private double PasswordStrength { get; set; } = 0;
-    
+
     private Color PasswordStrengthColor =>
         PasswordStrength < 40 ? Color.Error :
         PasswordStrength < 70 ? Color.Warning :
         Color.Success;
 
-    [Inject] IJSRuntime JS { get; set; } = default!;
     private bool _showPassword = false;
     private MudTextField<string>? _passwordField;
+
+    protected override void OnInitialized()
+    {
+        if (Entry != null)
+        {
+            Title = Entry.CipherTitle;
+            Username = Entry.CipherUsername;
+            Password = Entry.CipherPassword;
+            Url = Entry.CipherUrl;
+            Commentary = Entry.CipherCommentary;
+
+            CreatedAt = Entry.CreatedAt ?? DateTime.Now;
+            UpdatedAt = Entry.UpdatedAt ?? DateTime.Now;
+        }
+    }
 
     private void ToggleShowPassword()
     {
@@ -166,21 +184,6 @@
         // Refocus pour forcer la validation et enlever l'avertissement
         if (_passwordField != null)
             await _passwordField.FocusAsync();
-    }
-
-    protected override void OnInitialized()
-    {
-        if (Entry != null)
-        {
-            Title = Entry.CipherTitle;
-            Username = Entry.CipherUsername;
-            Password = Entry.CipherPassword;
-            Url = Entry.CipherUrl;
-            Commentary = Entry.CipherCommentary;
-
-            CreatedAt = Entry.CreatedAt ?? DateTime.Now;
-            UpdatedAt = Entry.UpdatedAt ?? DateTime.Now;
-        }
     }
 
     private async Task OnPasswordInput(string password)
@@ -203,20 +206,115 @@
     {
         if (!string.IsNullOrWhiteSpace(Title) && !string.IsNullOrWhiteSpace(Password))
         {
-            var entry = Entry ?? new VaultEntryService.VaultEntry
-                {
-                    Id = Guid.NewGuid(),
-                    CreatedAt = DateTime.UtcNow
-                };
+            // Debug chiffrement
+            Console.WriteLine("DEBUG CHIFFREMENT : \nMDP = " + VaultService.Password + "\nSALT = " + VaultService.Salt);
 
-            entry.CipherTitle = Title;
-            entry.CipherUsername = Username;
-            entry.CipherPassword = Password;
-            entry.CipherUrl = Url;
-            entry.CipherCommentary = Commentary;
-            entry.UpdatedAt = DateTime.UtcNow;
+            // Chiffrement côté JS
+            var titleResult = await JS.InvokeAsync<Dictionary<string, string>>(
+                "encryptAesGcm",
+                VaultService.Password,
+                VaultService.Salt,
+                Title
+            );
+            var usernameResult = await JS.InvokeAsync<Dictionary<string, string>>(
+                "encryptAesGcm",
+                VaultService.Password,
+                VaultService.Salt,
+                Username
+            );
+            var passwordResult = await JS.InvokeAsync<Dictionary<string, string>>(
+                "encryptAesGcm",
+                VaultService.Password,
+                VaultService.Salt,
+                Password
+            );
+            var urlResult = await JS.InvokeAsync<Dictionary<string, string>>(
+                "encryptAesGcm",
+                VaultService.Password,
+                VaultService.Salt,
+                Url
+            );
+            var commentaryResult = await JS.InvokeAsync<Dictionary<string, string>>(
+                "encryptAesGcm",
+                VaultService.Password,
+                VaultService.Salt,
+                Commentary
+            );
 
-            await OnSave.InvokeAsync(entry);
+
+            var entry = new VaultEntryService.CreateVaultEntryRequestDto();
+            entry.CipherTitle = titleResult["ciphertext"];
+            entry.TitleIV = titleResult["iv"];
+            entry.TitleTag = titleResult["tag"];
+            entry.CipherUsername = usernameResult["ciphertext"];
+            entry.UsernameIV = usernameResult["iv"];
+            entry.UsernameTag = usernameResult["tag"];
+            entry.CipherPassword = passwordResult["ciphertext"];
+            entry.PasswordIV = passwordResult["iv"];
+            entry.PasswordTag = passwordResult["tag"];
+            entry.CipherUrl = urlResult["ciphertext"];
+            entry.UrlIV = urlResult["iv"];
+            entry.UrlTag = urlResult["tag"];
+            entry.CipherCommentary = commentaryResult["ciphertext"];
+            entry.ComentaryIV = commentaryResult["iv"];
+            entry.ComentaryTag = commentaryResult["tag"];
+
+            VaultEntryService.VaultEntry vaultEntry = await VaultEntryService.CreateEntryAsync(entry, VaultService.CurrentVault.Id);
+
+
+            vaultEntry.CipherTitle = await JS.InvokeAsync<string>(
+                "decryptAesGcm",
+                VaultService.Password,
+                VaultService.Salt,
+                vaultEntry.TitleIV,
+                vaultEntry.TitleTag,
+                vaultEntry.CipherTitle,
+                100000
+            );
+
+            vaultEntry.CipherUsername = await JS.InvokeAsync<string>(
+                "decryptAesGcm",
+                VaultService.Password,
+                VaultService.Salt,
+                vaultEntry.UsernameIV,
+                vaultEntry.UsernameTag,
+                vaultEntry.CipherUsername,
+                100000
+            );
+
+            vaultEntry.CipherUrl = await JS.InvokeAsync<string>(
+                "decryptAesGcm",
+                VaultService.Password,
+                VaultService.Salt,
+                vaultEntry.UrlIV,
+                vaultEntry.UrlTag,
+                vaultEntry.CipherUrl,
+                100000
+            );
+
+            vaultEntry.CipherPassword = await JS.InvokeAsync<string>(
+                "decryptAesGcm",
+                VaultService.Password,
+                VaultService.Salt,
+                vaultEntry.PasswordIV,
+                vaultEntry.PasswordTag,
+                vaultEntry.CipherPassword,
+                100000
+            );
+
+            vaultEntry.CipherCommentary = await JS.InvokeAsync<string>(
+                "decryptAesGcm",
+                VaultService.Password,
+                VaultService.Salt,
+                vaultEntry.ComentaryIV,
+                vaultEntry.ComentaryTag,
+                vaultEntry.CipherCommentary,
+                100000
+            );
+
+            // Déchiffrer les données, fonction dans le service pour chiffrer / déchiffrer
+
+            await OnSave.InvokeAsync(vaultEntry);
             MudDialog.Close();
         }
     }

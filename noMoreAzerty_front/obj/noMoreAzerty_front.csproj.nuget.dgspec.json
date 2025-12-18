@@ -86,6 +86,10 @@
             "MudBlazor": {
               "target": "Package",
               "version": "[8.13.0, )"
+            },
+            "NoMoreAzerty.Shared": {
+              "target": "Package",
+              "version": "[1.0.6, )"
             }
           },
           "imports": [

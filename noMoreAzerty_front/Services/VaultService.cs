@@ -1,11 +1,14 @@
-﻿using System.Text.Json;
+﻿using System.Net;
+using System.Text.Json;
 using static System.Net.WebRequestMethods;
 
 namespace noMoreAzerty_front.Services;
 
 public class VaultService
 {
-    public VaultService.Vault? CurrentVault { get; set; }
+    public Vault? CurrentVault { get; set; }
+    public string? Password { get; set; }
+    public string? Salt { get; set; }
 
     private readonly HttpClient _httpClient;
 
@@ -25,12 +28,19 @@ public class VaultService
     public async Task<Vault> CreateVaultAsync(CreateVaultRequestDto createVaultRequest)
     {
         var jsonContent = new StringContent(JsonSerializer.Serialize(createVaultRequest), System.Text.Encoding.UTF8, "application/json");
-        // debug
-        Console.WriteLine("Creating vault with request: " + JsonSerializer.Serialize(createVaultRequest));
         var response = await _httpClient.PostAsync("api/vault", jsonContent);
-        // debug
-        Console.WriteLine("Response status code: " + response.StatusCode);
-        Console.WriteLine("Response content: " + await response.Content.ReadAsStringAsync());
+
+        //if (response.IsSuccessStatusCode)
+        //{
+        //    var content = await response.Content.ReadAsStringAsync();
+        //    // Si le serveur retourne juste un GUID en texte brut
+        //    return content.Trim('"'); // Enlève les guillemets si c'est du JSON string
+        //}
+        //
+        //return null;
+
+        //return response.StatusCode == HttpStatusCode.Created;
+
         response.EnsureSuccessStatusCode();
         var content = await response.Content.ReadAsStringAsync();
         return JsonSerializer.Deserialize<Vault>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
@@ -40,7 +50,6 @@ public class VaultService
     {
         public Guid Id { get; set; }
         public string? Name { get; set; }
-        public string? HashPassword { get; set; }
         public string? PasswordSalt { get; set; }
         public DateTime CreatedAt { get; set; }
     }
