@@ -20,28 +20,23 @@ public class VaultService
     public async Task<List<Vault>> GetAllVaultsAsync()
     {
         var response = await _httpClient.GetAsync("api/vault/my");
-        response.EnsureSuccessStatusCode();
+
+        if (!response.IsSuccessStatusCode)
+            return [];
+
         var content = await response.Content.ReadAsStringAsync();
-        return JsonSerializer.Deserialize<List<Vault>>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+        return JsonSerializer.Deserialize<List<Vault>>(content,
+            new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
     }
 
-    public async Task<Vault> CreateVaultAsync(CreateVaultRequestDto createVaultRequest)
+    public async Task<Vault?> CreateVaultAsync(CreateVaultRequestDto createVaultRequest)
     {
         var jsonContent = new StringContent(JsonSerializer.Serialize(createVaultRequest), System.Text.Encoding.UTF8, "application/json");
         var response = await _httpClient.PostAsync("api/vault", jsonContent);
 
-        //if (response.IsSuccessStatusCode)
-        //{
-        //    var content = await response.Content.ReadAsStringAsync();
-        //    // Si le serveur retourne juste un GUID en texte brut
-        //    return content.Trim('"'); // Enlève les guillemets si c'est du JSON string
-        //}
-        //
-        //return null;
+        if (!response.IsSuccessStatusCode)
+            return null;
 
-        //return response.StatusCode == HttpStatusCode.Created;
-
-        response.EnsureSuccessStatusCode();
         var content = await response.Content.ReadAsStringAsync();
         return JsonSerializer.Deserialize<Vault>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
     }

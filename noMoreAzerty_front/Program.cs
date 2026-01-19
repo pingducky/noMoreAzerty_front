@@ -4,11 +4,13 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using noMoreAzerty_front;
 using noMoreAzerty_front.Services;
 using MudBlazor.Services;
+using noMoreAzerty_front.Handlers;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
+builder.Services.AddMudServices();
 
 // Configuration de l'authentification avec Azure AD
 builder.Services.AddMsalAuthentication(options =>
@@ -18,11 +20,14 @@ builder.Services.AddMsalAuthentication(options =>
     options.ProviderOptions.LoginMode = "redirect";
 });
 
+builder.Services.AddScoped<HttpErrorHandler>();
+
 // Enregistre un HttpClient qui enverra le token automatiquement
 builder.Services.AddHttpClient("API", client =>
 {
     client.BaseAddress = new Uri("https://localhost:7104/");
 })
+.AddHttpMessageHandler<HttpErrorHandler>()
 .AddHttpMessageHandler(sp => sp.GetRequiredService<AuthorizationMessageHandler>()
     .ConfigureHandler(
         authorizedUrls: new[] { "https://localhost:7104" },
@@ -30,7 +35,5 @@ builder.Services.AddHttpClient("API", client =>
 
 builder.Services.AddScoped<VaultService>();
 builder.Services.AddScoped<VaultEntryService>();
-
-builder.Services.AddMudServices();
 
 await builder.Build().RunAsync();

@@ -1,5 +1,9 @@
-﻿@inject VaultEntryService VaultEntryService
+﻿@using Microsoft.AspNetCore.Authorization
+@using noMoreAzerty_front.Handlers
+@inject VaultEntryService VaultEntryService
 @inject VaultService VaultService
+@inject ISnackbar Snackbar
+@attribute [Authorize]
 
 <MudDialog MaxWidth="MaxWidth.Medium" FullWidth="true">
     <TitleContent>
@@ -259,8 +263,20 @@
             entry.ComentaryIV = commentaryResult["iv"];
             entry.ComentaryTag = commentaryResult["tag"];
 
-            VaultEntryService.VaultEntry vaultEntry = await VaultEntryService.CreateEntryAsync(entry, VaultService.CurrentVault.Id);
+            VaultEntryService.VaultEntry vaultEntry = new();
 
+            try
+            {
+                vaultEntry = await VaultEntryService.CreateEntryAsync(entry, VaultService.CurrentVault.Id);
+            }
+            catch (ApiException ex)
+            {
+                Snackbar.Add(ex.Message, Severity.Error);
+            }
+            catch (Exception ex)
+            {
+                Snackbar.Add($"Erreur inattendue : {ex.Message}", Severity.Error);
+            }
 
             vaultEntry.CipherTitle = await JS.InvokeAsync<string>(
                 "decryptAesGcm",

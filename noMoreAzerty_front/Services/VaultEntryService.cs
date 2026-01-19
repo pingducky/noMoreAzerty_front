@@ -16,23 +16,38 @@ namespace noMoreAzerty_front.Services
             _httpClient = httpClientFactory.CreateClient("API");
         }
 
-        public async Task<List<VaultEntry>> GetEntriesByVaultIdAsync(VaultAccessRequestDto request, Guid vaultId)
+        public async Task<List<VaultEntry>?> GetEntriesByVaultIdAsync(VaultAccessRequestDto request, Guid vaultId)
         {
             var jsonContent = new StringContent(JsonSerializer.Serialize(request), System.Text.Encoding.UTF8, "application/json");
             var response = await _httpClient.PostAsync($"api/vaults/{vaultId}/entries/access", jsonContent);
-            response.EnsureSuccessStatusCode();
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return null;
+            }
+
             var content = await response.Content.ReadAsStringAsync();
-            Console.WriteLine("Réponse JSON brute : " + content);
-            return JsonSerializer.Deserialize<List<VaultEntry>>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            return JsonSerializer.Deserialize<List<VaultEntry>>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new List<VaultEntry>();
         }
 
-        public async Task<VaultEntry> CreateEntryAsync(CreateVaultEntryRequestDto createVaultEntryRequest, Guid vaultId)
+        public async Task<VaultEntry?> CreateEntryAsync(CreateVaultEntryRequestDto createVaultEntryRequest, Guid vaultId)
         {
             var jsonContent = new StringContent(JsonSerializer.Serialize(createVaultEntryRequest), System.Text.Encoding.UTF8, "application/json");
             var response = await _httpClient.PostAsync($"api/vaults/{vaultId}/entries/create", jsonContent);
-            response.EnsureSuccessStatusCode();
+
+            if (!response.IsSuccessStatusCode)
+                return null;
+
             var content = await response.Content.ReadAsStringAsync();
             return JsonSerializer.Deserialize<VaultEntry>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
+        }
+            
+        public async Task<bool> DeleteEntryAsync(Guid vaultId, Guid entryId)
+        {           
+            var response = await _httpClient.DeleteAsync(
+                $"api/vaults/{vaultId}/entries/{entryId}");
+
+            return response.IsSuccessStatusCode;
         }
 
         public async Task<CreateVaultEntryRequestDto> EncryptVaultEntryAsync(

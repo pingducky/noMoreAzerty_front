@@ -1,7 +1,9 @@
 ﻿@using Microsoft.AspNetCore.Authorization
+@using noMoreAzerty_front.Handlers
 @using static noMoreAzerty_front.Services.VaultService
 @inject VaultService VaultService
 @inject IDialogService DialogService
+@inject ISnackbar Snackbar
 @page "/"
 @attribute [Authorize]
 
@@ -74,7 +76,20 @@
     protected override async Task OnInitializedAsync()
     {
         isLoading = true;
-        vaults = await VaultService.GetAllVaultsAsync();
+
+        try
+        {
+            vaults = await VaultService.GetAllVaultsAsync();
+        }
+        catch (ApiException ex)
+        {
+            Snackbar.Add(ex.Message, Severity.Error);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Erreur inattendue : {ex.Message}", Severity.Error);
+        }
+
         isLoading = false;
     }
 

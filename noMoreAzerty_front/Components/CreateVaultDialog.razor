@@ -1,5 +1,9 @@
-﻿@using static noMoreAzerty_front.Services.VaultService
+﻿@using Microsoft.AspNetCore.Authorization
+@using noMoreAzerty_front.Handlers
+@using static noMoreAzerty_front.Services.VaultService
 @inject VaultService VaultService
+@inject ISnackbar Snackbar
+@attribute [Authorize]
 
 <MudDialog>
     <TitleContent>New Vault</TitleContent>
@@ -14,8 +18,8 @@
                       Variant="Variant.Outlined"
                       Margin="Margin.Dense"
                       ValueChanged="@(async (string value) => await OnPasswordInput(value))"
-                      Immediate="true"
-                      InputType="InputType.Password"
+                      Immediate="true" 
+                      InputType="@(_showPassword ? InputType.Text : InputType.Password)"
                       Required="true"
                       Adornment="Adornment.End"
                       AdornmentIcon="@(_showPassword ? Icons.Material.Filled.VisibilityOff : Icons.Material.Filled.Visibility)"
@@ -107,6 +111,11 @@
     private Color GetColor(bool valid) =>
         valid ? Color.Success : Color.Error;
 
+    private void ToggleShowPassword()
+    {
+        _showPassword = !_showPassword;
+    }
+
     private async Task OnPasswordInput(string password)
     {
         Password = password;
@@ -123,11 +132,6 @@
         );
     }
 
-    private void ToggleShowPassword()
-    {
-        _showPassword = !_showPassword;
-    }
-
     private async Task Save()
     {
         if (!string.IsNullOrWhiteSpace(VaultName) && !string.IsNullOrWhiteSpace(Password))
@@ -142,20 +146,25 @@
                     PasswordSalt = salt
                 };
 
-            // TODO : Test stockage mdp et salt pour chiffrement déchiffrement
-            // Dérivation del a clé de chiffrement
-            //var key = await JS.InvokeAsync<string>("deriveKey", Password, salt);
             VaultService.Password = Password;
             VaultService.Salt = salt;
-            
-            // Debug
-            Console.WriteLine("Mdp : " + VaultService.Password + "\n Salt : " + VaultService.Salt);
 
-            Vault vault = await VaultService.CreateVaultAsync(createVaultRequestDto);
+            try
+            {
+                Vault vault = await VaultService.CreateVaultAsync(createVaultRequestDto);
 
-            await OnSave.InvokeAsync(vault);
+                await OnSave.InvokeAsync(vault);
 
-            MudDialog.Close();
+                MudDialog.Close();
+            }
+            catch (ApiException ex)
+            {
+                Snackbar.Add(ex.Message, Severity.Error);
+            }
+            catch (Exception ex)
+            {
+                Snackbar.Add($"Erreur inattendue : {ex.Message}", Severity.Error);
+            }
         }
     }
     

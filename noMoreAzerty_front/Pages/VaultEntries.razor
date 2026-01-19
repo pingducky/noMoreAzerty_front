@@ -1,8 +1,12 @@
 ﻿@page "/vaults/{vaultId:guid}"
+@using Microsoft.AspNetCore.Authorization
+@using noMoreAzerty_front.Handlers
 @inject VaultService VaultService
 @inject VaultEntryService VaultEntryService
 @inject NavigationManager Navigation
 @inject IDialogService DialogService
+@inject ISnackbar Snackbar
+@attribute [Authorize]
 
 <PageTitle>Vault Entries</PageTitle>
 
@@ -45,10 +49,12 @@
                         </MudText>
 
                         <MudSpacer />
-
+                        
                         <MudIconButton Color="Color.Error"
+                                       Icon="@Icons.Material.Filled.Delete"
                                        OnClick="@(e => DeleteVaultEntry(entry))"
-                                       Icon="@Icons.Material.Filled.Delete" />
+                                       OnClick:stopPropagation="true" />
+
                     </MudStack>
 
                 </MudPaper>
@@ -61,22 +67,16 @@
     [Inject] IJSRuntime JS { get; set; } = default!;
     [Parameter] public Guid VaultId { get; set; }
     private VaultService.Vault? Vault { get; set; }
-    private List<VaultEntryService.VaultEntry>? Entries { get; set; }
+    private List<VaultEntryService.VaultEntry> Entries { get; set; } = new List<VaultEntryService.VaultEntry>();
     private VaultEntryService.VaultEntry? SelectedEntry;
 
     protected override async Task OnInitializedAsync()
     {
-        // Charger les informations du vault
-        //Vault = await VaultService.GetVaultByIdAsync(VaultId);
         Vault = VaultService.CurrentVault;
         Entries = VaultEntryService.Entries;
 
-        // Pour chaque entrée on décrypte le title
         if (Entries != null)
         {
-            // Debug chiffrement
-            Console.WriteLine("DEBUG CHIFFREMENT : \nMDP = " + VaultService.Password + "\nSALT = " + VaultService.Salt);
-
             foreach (var entry in Entries)
             {
                 Console.WriteLine($"Decrypting title for entry ID: {entry.Id}, CipherTitle : {entry.CipherTitle}");
@@ -90,7 +90,7 @@
                     entry.CipherTitle,
                     100000
                 );
-                
+
                 entry.CipherUsername = await JS.InvokeAsync<string>(
                     "decryptAesGcm",
                     VaultService.Password,
@@ -100,7 +100,7 @@
                     entry.CipherUsername,
                     100000
                 );
-                
+
                 entry.CipherUrl = await JS.InvokeAsync<string>(
                     "decryptAesGcm",
                     VaultService.Password,
@@ -110,7 +110,7 @@
                     entry.CipherUrl,
                     100000
                 );
-                
+
                 entry.CipherPassword = await JS.InvokeAsync<string>(
                     "decryptAesGcm",
                     VaultService.Password,
@@ -166,6 +166,64 @@
         DialogService.Show<VaultEntryDialog>("Edit Entry", parameters, options);
     }
 
+    private async Task DeleteVaultEntry(VaultEntryService.VaultEntry vaultEntry)
+    {
+        var confirmed = await ConfirmDeleteAsync(vaultEntry);
+
+        if (!confirmed)
+            return;
+
+        try
+        {
+            var success = await VaultEntryService.DeleteEntryAsync(VaultId, vaultEntry.Id);
+
+            if (!success)
+                return;
+
+            if (success)
+            {
+                Snackbar.Add("Entry deleted", Severity.Success);
+                Entries.Remove(vaultEntry);
+            }
+        }
+        catch (ApiException ex)
+        {
+            Snackbar.Add(ex.Message, Severity.Error);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Erreur inattendue : {ex.Message}", Severity.Error);
+        }
+    }
+
+    private async Task<bool> ConfirmDeleteAsync(VaultEntryService.VaultEntry entry)
+    {
+        var parameters = new DialogParameters
+            {
+                ["ContentText"] = $"Voulez-vous vraiment supprimer « {entry.CipherTitle} » ?",
+                ["ButtonText"] = "Supprimer",
+                ["Color"] = Color.Error
+            };
+
+        var options = new DialogOptions
+            {
+                CloseButton = true,
+                MaxWidth = MaxWidth.Small,
+                FullWidth = true
+            };
+
+        var dialog = DialogService.Show<ConfirmDialog>(
+            "Confirmation",
+            parameters,
+            options);
+
+        var result = await dialog.Result;
+
+        return !result.Canceled;
+    }
+
+
+
     private void AddEntry(VaultEntryService.VaultEntry newVaultEntry)
     {
         Entries.Add(newVaultEntry);
@@ -176,11 +234,6 @@
         var index = Entries.FindIndex(e => e.Id == updatedEntry.Id);
         if (index != -1)
             Entries[index] = updatedEntry;
-    }
-
-    private void DeleteVaultEntry(VaultEntryService.VaultEntry vaultEntry)
-    {
-        Entries.Remove(vaultEntry);
     }
 
 }
