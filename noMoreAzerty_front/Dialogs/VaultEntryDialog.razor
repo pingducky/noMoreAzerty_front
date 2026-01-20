@@ -1,5 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Authorization
 @using noMoreAzerty_front.Handlers
+@using noMoreAzerty_dto.DTOs.Request;
 @inject VaultEntryService VaultEntryService
 @inject VaultService VaultService
 @inject ISnackbar Snackbar
@@ -128,7 +129,8 @@
     [CascadingParameter] IMudDialogInstance MudDialog { get; set; } = default!;
     [Parameter] public EventCallback<VaultEntryService.VaultEntry> OnSave { get; set; }
     [Parameter] public VaultEntryService.VaultEntry? Entry { get; set; }
-    private bool IsEdit => Entry != null;
+
+    private bool IsEdit { get; set; } = false;
 
     private string Title { get; set; } = string.Empty;
     private string Username { get; set; } = string.Empty;
@@ -158,6 +160,9 @@
 
     protected override void OnInitialized()
     {
+        // Fixer le mode édition dès l'initialisation
+        IsEdit = Entry != null;
+
         if (Entry != null)
         {
             Title = Entry.CipherTitle;
@@ -210,9 +215,6 @@
     {
         if (!string.IsNullOrWhiteSpace(Title) && !string.IsNullOrWhiteSpace(Password))
         {
-            // Debug chiffrement
-            Console.WriteLine("DEBUG CHIFFREMENT : \nMDP = " + VaultService.Password + "\nSALT = " + VaultService.Salt);
-
             // Chiffrement côté JS
             var titleResult = await JS.InvokeAsync<Dictionary<string, string>>(
                 "encryptAesGcm",
@@ -245,39 +247,94 @@
                 Commentary
             );
 
-
-            var entry = new VaultEntryService.CreateVaultEntryRequestDto();
-            entry.CipherTitle = titleResult["ciphertext"];
-            entry.TitleIV = titleResult["iv"];
-            entry.TitleTag = titleResult["tag"];
-            entry.CipherUsername = usernameResult["ciphertext"];
-            entry.UsernameIV = usernameResult["iv"];
-            entry.UsernameTag = usernameResult["tag"];
-            entry.CipherPassword = passwordResult["ciphertext"];
-            entry.PasswordIV = passwordResult["iv"];
-            entry.PasswordTag = passwordResult["tag"];
-            entry.CipherUrl = urlResult["ciphertext"];
-            entry.UrlIV = urlResult["iv"];
-            entry.UrlTag = urlResult["tag"];
-            entry.CipherCommentary = commentaryResult["ciphertext"];
-            entry.ComentaryIV = commentaryResult["iv"];
-            entry.ComentaryTag = commentaryResult["tag"];
-
-            VaultEntryService.VaultEntry vaultEntry = new();
+            VaultEntryService.VaultEntry? vaultEntry = null;
 
             try
             {
-                vaultEntry = await VaultEntryService.CreateEntryAsync(entry, VaultService.CurrentVault.Id);
+                if (IsEdit)
+                {
+                    // Mode Update
+                    var updateRequest = new UpdateVaultEntryRequest
+                    {
+                        CipherTitle = titleResult["ciphertext"],
+                        TitleIV = titleResult["iv"],
+                        TitleTag = titleResult["tag"],
+                        CipherUsername = usernameResult["ciphertext"],
+                        UsernameIV = usernameResult["iv"],
+                        UsernameTag = usernameResult["tag"],
+                        CipherPassword = passwordResult["ciphertext"],
+                        PasswordIV = passwordResult["iv"],
+                        PasswordTag = passwordResult["tag"],
+                        CipherUrl = urlResult["ciphertext"],
+                        UrlIV = urlResult["iv"],
+                        UrlTag = urlResult["tag"],
+                        CipherCommentary = commentaryResult["ciphertext"],
+                        ComentaryIV = commentaryResult["iv"],
+                        ComentaryTag = commentaryResult["tag"]
+                    };
+
+                    vaultEntry = await VaultEntryService.UpdateEntryAsync(
+                        updateRequest,
+                        VaultService.CurrentVault.Id,
+                        Entry!.Id
+                    );
+
+                    if (vaultEntry == null)
+                    {
+                        Snackbar.Add("Failed to update entry", Severity.Error);
+                        return;
+                    }
+
+                    Snackbar.Add("Entry updated successfully", Severity.Success);
+                }
+                else
+                {
+                    // Mode Create
+                    var createRequest = new CreateVaultEntryRequest
+                    {
+                        CipherTitle = titleResult["ciphertext"],
+                        TitleIV = titleResult["iv"],
+                        TitleTag = titleResult["tag"],
+                        CipherUsername = usernameResult["ciphertext"],
+                        UsernameIV = usernameResult["iv"],
+                        UsernameTag = usernameResult["tag"],
+                        CipherPassword = passwordResult["ciphertext"],
+                        PasswordIV = passwordResult["iv"],
+                        PasswordTag = passwordResult["tag"],
+                        CipherUrl = urlResult["ciphertext"],
+                        UrlIV = urlResult["iv"],
+                        UrlTag = urlResult["tag"],
+                        CipherCommentary = commentaryResult["ciphertext"],
+                        ComentaryIV = commentaryResult["iv"],
+                        ComentaryTag = commentaryResult["tag"]
+                    };
+
+                    vaultEntry = await VaultEntryService.CreateEntryAsync(
+                        createRequest,
+                        VaultService.CurrentVault.Id
+                    );
+
+                    if (vaultEntry == null)
+                    {
+                        Snackbar.Add("Failed to create entry", Severity.Error);
+                        return;
+                    }
+
+                    Snackbar.Add("Entry created successfully", Severity.Success);
+                }
             }
             catch (ApiException ex)
             {
                 Snackbar.Add(ex.Message, Severity.Error);
+                return;
             }
             catch (Exception ex)
             {
                 Snackbar.Add($"Erreur inattendue : {ex.Message}", Severity.Error);
+                return;
             }
 
+            // Déchiffrement des données pour affichage
             vaultEntry.CipherTitle = await JS.InvokeAsync<string>(
                 "decryptAesGcm",
                 VaultService.Password,
@@ -327,8 +384,6 @@
                 vaultEntry.CipherCommentary,
                 100000
             );
-
-            // Déchiffrer les données, fonction dans le service pour chiffrer / déchiffrer
 
             await OnSave.InvokeAsync(vaultEntry);
             MudDialog.Close();

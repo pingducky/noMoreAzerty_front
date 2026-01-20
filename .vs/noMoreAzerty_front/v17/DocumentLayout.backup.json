@@ -3,6 +3,10 @@
   "WorkspaceRootPath": "C:\\Users\\antho\\OneDrive\\Documents\\Cours\\M2\\Architecture .NET\\TP\\noMoreAzerty_front\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{3A55C46E-26D6-4ED3-8AE8-21A5CA1E2ABB}|noMoreAzerty_front\\noMoreAzerty_front.csproj|c:\\users\\antho\\onedrive\\documents\\cours\\m2\\architecture .net\\tp\\nomoreazerty_front\\nomoreazerty_front\\pages\\vaultentries.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{3A55C46E-26D6-4ED3-8AE8-21A5CA1E2ABB}|noMoreAzerty_front\\noMoreAzerty_front.csproj|solutionrelative:nomoreazerty_front\\pages\\vaultentries.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{3A55C46E-26D6-4ED3-8AE8-21A5CA1E2ABB}|noMoreAzerty_front\\noMoreAzerty_front.csproj|c:\\users\\antho\\onedrive\\documents\\cours\\m2\\architecture .net\\tp\\nomoreazerty_front\\nomoreazerty_front\\components\\createvaultdialog.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{3A55C46E-26D6-4ED3-8AE8-21A5CA1E2ABB}|noMoreAzerty_front\\noMoreAzerty_front.csproj|solutionrelative:nomoreazerty_front\\components\\createvaultdialog.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
@@ -17,10 +21,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{3A55C46E-26D6-4ED3-8AE8-21A5CA1E2ABB}|noMoreAzerty_front\\noMoreAzerty_front.csproj|c:\\users\\antho\\onedrive\\documents\\cours\\m2\\architecture .net\\tp\\nomoreazerty_front\\nomoreazerty_front\\pages\\authentication.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{3A55C46E-26D6-4ED3-8AE8-21A5CA1E2ABB}|noMoreAzerty_front\\noMoreAzerty_front.csproj|solutionrelative:nomoreazerty_front\\pages\\authentication.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{3A55C46E-26D6-4ED3-8AE8-21A5CA1E2ABB}|noMoreAzerty_front\\noMoreAzerty_front.csproj|c:\\users\\antho\\onedrive\\documents\\cours\\m2\\architecture .net\\tp\\nomoreazerty_front\\nomoreazerty_front\\pages\\vaultentries.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{3A55C46E-26D6-4ED3-8AE8-21A5CA1E2ABB}|noMoreAzerty_front\\noMoreAzerty_front.csproj|solutionrelative:nomoreazerty_front\\pages\\vaultentries.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{3A55C46E-26D6-4ED3-8AE8-21A5CA1E2ABB}|noMoreAzerty_front\\noMoreAzerty_front.csproj|c:\\users\\antho\\onedrive\\documents\\cours\\m2\\architecture .net\\tp\\nomoreazerty_front\\nomoreazerty_front\\pages\\vaults.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
@@ -54,7 +54,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 8,
+          "SelectedChildIndex": 14,
           "Children": [
             {
               "$type": "Bookmark",
@@ -74,7 +74,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "Authentication.razor",
               "DocumentMoniker": "C:\\Users\\antho\\OneDrive\\Documents\\Cours\\M2\\Architecture .NET\\TP\\noMoreAzerty_front\\noMoreAzerty_front\\Pages\\Authentication.razor",
               "RelativeDocumentMoniker": "noMoreAzerty_front\\Pages\\Authentication.razor",
@@ -100,7 +100,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "VaultEntryDialog.razor",
               "DocumentMoniker": "C:\\Users\\antho\\OneDrive\\Documents\\Cours\\M2\\Architecture .NET\\TP\\noMoreAzerty_front\\noMoreAzerty_front\\Components\\VaultEntryDialog.razor",
               "RelativeDocumentMoniker": "noMoreAzerty_front\\Components\\VaultEntryDialog.razor",
@@ -113,7 +113,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "PasswordDialog.razor",
               "DocumentMoniker": "C:\\Users\\antho\\OneDrive\\Documents\\Cours\\M2\\Architecture .NET\\TP\\noMoreAzerty_front\\noMoreAzerty_front\\Components\\PasswordDialog.razor",
               "RelativeDocumentMoniker": "noMoreAzerty_front\\Components\\PasswordDialog.razor",
@@ -126,13 +126,13 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "CreateVaultDialog.razor",
               "DocumentMoniker": "C:\\Users\\antho\\OneDrive\\Documents\\Cours\\M2\\Architecture .NET\\TP\\noMoreAzerty_front\\noMoreAzerty_front\\Components\\CreateVaultDialog.razor",
               "RelativeDocumentMoniker": "noMoreAzerty_front\\Components\\CreateVaultDialog.razor",
               "ToolTip": "C:\\Users\\antho\\OneDrive\\Documents\\Cours\\M2\\Architecture .NET\\TP\\noMoreAzerty_front\\noMoreAzerty_front\\Components\\CreateVaultDialog.razor",
               "RelativeToolTip": "noMoreAzerty_front\\Components\\CreateVaultDialog.razor",
-              "ViewState": "AgIAAJgAAAAAAAAAAAAAAAEAAAAiAAAAAAAAAA==",
+              "ViewState": "AgIAAIwAAAAAAAAAAAAAAJoAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2026-01-19T23:13:18.776Z",
               "EditorCaption": ""
@@ -204,13 +204,13 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 0,
               "Title": "VaultEntries.razor",
               "DocumentMoniker": "C:\\Users\\antho\\OneDrive\\Documents\\Cours\\M2\\Architecture .NET\\TP\\noMoreAzerty_front\\noMoreAzerty_front\\Pages\\VaultEntries.razor",
               "RelativeDocumentMoniker": "noMoreAzerty_front\\Pages\\VaultEntries.razor",
               "ToolTip": "C:\\Users\\antho\\OneDrive\\Documents\\Cours\\M2\\Architecture .NET\\TP\\noMoreAzerty_front\\noMoreAzerty_front\\Pages\\VaultEntries.razor",
               "RelativeToolTip": "noMoreAzerty_front\\Pages\\VaultEntries.razor",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAWAAAAAAAAAA==",
+              "ViewState": "AgIAAKkAAAAAAAAAAAAAAMQAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-12-18T14:38:18.216Z",
               "EditorCaption": ""

@@ -1,5 +1,6 @@
 ﻿@page "/vaults/{vaultId:guid}"
 @using Microsoft.AspNetCore.Authorization
+@using noMoreAzerty_front.Dialogs
 @using noMoreAzerty_front.Handlers
 @inject VaultService VaultService
 @inject VaultEntryService VaultEntryService
@@ -168,10 +169,15 @@
 
     private async Task DeleteVaultEntry(VaultEntryService.VaultEntry vaultEntry)
     {
-        var confirmed = await ConfirmDeleteAsync(vaultEntry);
 
-        if (!confirmed)
-            return;
+        bool? confirmed = await DialogService.ShowMessageBox(
+            "Confirm deletion",
+            $"Are you sure you want to delete the vault '{vaultEntry.CipherTitle}'? This action cannot be undone.",
+            yesText: "Delete",
+            cancelText: "Cancel"
+        );
+
+        if (confirmed != true) return;
 
         try
         {
@@ -195,34 +201,6 @@
             Snackbar.Add($"Erreur inattendue : {ex.Message}", Severity.Error);
         }
     }
-
-    private async Task<bool> ConfirmDeleteAsync(VaultEntryService.VaultEntry entry)
-    {
-        var parameters = new DialogParameters
-            {
-                ["ContentText"] = $"Voulez-vous vraiment supprimer « {entry.CipherTitle} » ?",
-                ["ButtonText"] = "Supprimer",
-                ["Color"] = Color.Error
-            };
-
-        var options = new DialogOptions
-            {
-                CloseButton = true,
-                MaxWidth = MaxWidth.Small,
-                FullWidth = true
-            };
-
-        var dialog = DialogService.Show<ConfirmDialog>(
-            "Confirmation",
-            parameters,
-            options);
-
-        var result = await dialog.Result;
-
-        return !result.Canceled;
-    }
-
-
 
     private void AddEntry(VaultEntryService.VaultEntry newVaultEntry)
     {

@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Authorization
+@using noMoreAzerty_front.Dialogs
 @using noMoreAzerty_front.Handlers
 @using static noMoreAzerty_front.Services.VaultService
 @inject VaultService VaultService
@@ -54,9 +55,20 @@
 
                         <MudSpacer />
 
+                        <MudIconButton Color="Color.Default"
+                                       OnClick="@(() => OpenEditDialog(vault))"
+                                       Icon="@Icons.Material.Filled.Edit"
+                                       Title="Edit vault name" />
+
+                        <MudIconButton Color="Color.Primary"
+                                       OnClick="@(() => OpenShareDialog(vault))"
+                                       Icon="@Icons.Material.Filled.Share"
+                                       Title="Share vault" />
+
                         <MudIconButton Color="Color.Error"
-                                       OnClick="@(e => DeleteVault(vault))"
-                                       Icon="@Icons.Material.Filled.Delete" />
+                                       OnClick="@(() => DeleteVault(vault))"
+                                       Icon="@Icons.Material.Filled.Delete"
+                                       Title="Delete vault" />
                     </MudStack>
 
                 </MudPaper>
@@ -104,9 +116,39 @@
         vaults.Add(newVault);
     }
 
-    private void DeleteVault(VaultService.Vault vault)
+    private void UpdateVault(VaultService.Vault updatedVault)
     {
-        vaults.Remove(vault);
+        var index = vaults.FindIndex(v => v.Id == updatedVault.Id);
+        if (index != -1)
+        {
+            vaults[index] = updatedVault;
+            StateHasChanged();
+        }
+    }
+
+    private async void DeleteVault(VaultService.Vault vault)
+    {
+        bool? confirm = await DialogService.ShowMessageBox(
+            "Confirm deletion",
+            $"Are you sure you want to delete the vault '{vault.Name}'? This action cannot be undone.",
+            yesText: "Delete",
+            cancelText: "Cancel"
+        );
+
+        if (confirm != true) return;
+
+        bool success = await VaultService.DeleteVaultAsync(vault.Id);
+
+        if (success)
+        {
+            vaults.Remove(vault);
+            Snackbar.Add($"Vault '{vault.Name}' deleted successfully", Severity.Success);
+            StateHasChanged();
+        }
+        else
+        {
+            Snackbar.Add("Failed to delete vault", Severity.Error);
+        }
     }
 
     private async Task OpenCreateVaultDialog()
@@ -118,7 +160,25 @@
     
         var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true };
     
-        DialogService.Show<CreateVaultDialog>("Create Vault", parameters, options);
+        await DialogService.ShowAsync<CreateVaultDialog>("Create Vault", parameters, options);
+    }
+
+    private async Task OpenEditDialog(VaultService.Vault vault)
+    {
+        var parameters = new DialogParameters
+        {
+            { "Vault", vault },
+            { "OnSave", EventCallback.Factory.Create<VaultService.Vault>(this, UpdateVault) }
+        };
+
+        var options = new DialogOptions
+        {
+            CloseButton = true,
+            MaxWidth = MaxWidth.Small,
+            FullWidth = true
+        };
+
+        await DialogService.ShowAsync<EditVaultDialog>("Edit Vault", parameters, options);
     }
 
     private async Task OpenPasswordDialog(VaultService.Vault vault)
@@ -130,6 +190,23 @@
 
         var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true };
 
-        DialogService.Show<PasswordDialog>("Enter Password", parameters, options);
+        await DialogService.ShowAsync<PasswordDialog>("Enter Password", parameters, options);
+    }
+
+    private async Task OpenShareDialog(VaultService.Vault vault)
+    {
+        var parameters = new DialogParameters
+        {
+            { "Vault", vault }
+        };
+
+        var options = new DialogOptions
+        {
+            CloseButton = true,
+            MaxWidth = MaxWidth.Medium,
+            FullWidth = true
+        };
+
+        await DialogService.ShowAsync<ShareVaultDialog>("Share Vault", parameters, options);
     }
 }

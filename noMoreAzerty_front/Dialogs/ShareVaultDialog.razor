@@ -1,0 +1,193 @@
+@using Microsoft.AspNetCore.Authorization
+@using noMoreAzerty_front.Handlers
+@inject VaultService VaultService
+@inject ISnackbar Snackbar
+@inject IDialogService DialogService
+@attribute [Authorize]
+
+<MudDialog MaxWidth="MaxWidth.Medium" FullWidth="true">
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            Share Vault: @Vault?.Name
+        </MudText>
+    </TitleContent>
+
+    <DialogContent>
+        <!-- Formulaire d'ajout -->
+        <MudCard Class="mb-4" Elevation="0" Outlined="true">
+            <MudCardContent>
+                <MudText Typo="Typo.subtitle1" Class="mb-2">Share with a user</MudText>
+                
+                <MudStack Row="true" AlignItems="AlignItems.Center">
+                    <MudTextField @bind-Value="newUserEmail"
+                                  Label="Email"
+                                  Variant="Variant.Outlined"
+                                  Margin="Margin.Dense"
+                                  FullWidth
+                                  Disabled="@isLoading" />
+                    
+                    <MudButton OnClick="ShareVault"
+                               Color="Color.Primary"
+                               Variant="Variant.Filled"
+                               Disabled="@(string.IsNullOrWhiteSpace(newUserEmail) || isLoading)"
+                               StartIcon="@Icons.Material.Filled.Share">
+                        Share
+                    </MudButton>
+                </MudStack>
+            </MudCardContent>
+        </MudCard>
+
+        <!-- Liste des utilisateurs ayant accès -->
+        <MudCard Elevation="0" Outlined="true">
+            <MudCardContent>
+                <MudText Typo="Typo.subtitle1" Class="mb-2">Users with access</MudText>
+
+                @if (isLoading)
+                {
+                    <MudProgressCircular Size="Size.Small" Indeterminate="true" />
+                }
+                else if (!users.Any())
+                {
+                    <MudText Color="Color.Secondary" Typo="Typo.body2">
+                        Only you have access to this vault
+                    </MudText>
+                }
+                else
+                {
+                    <MudList Dense="true" T="string">
+                        @foreach (var user in users)
+                        {
+                            <MudListItem T="string">
+                                <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
+                                    <div>
+                                        <MudText Typo="Typo.body1">
+                                            @user.Email
+                                            @if (user.IsOwner)
+                                            {
+                                                <MudChip T="string" Size="Size.Small" Color="Color.Primary" Class="ml-2">Owner</MudChip>
+                                            }
+                                        </MudText>
+                                    </div>
+
+                                    @if (!user.IsOwner)
+                                    {
+                                        <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                                       Color="Color.Error"
+                                                       Size="Size.Small"
+                                                       OnClick="@(() => RemoveUser(user))" />
+                                    }
+                                </MudStack>
+                            </MudListItem>
+                        }
+                    </MudList>
+                }
+            </MudCardContent>
+        </MudCard>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton OnClick="Close" Variant="Variant.Text">Close</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] IMudDialogInstance MudDialog { get; set; } = default!;
+    [Parameter] public VaultService.Vault? Vault { get; set; }
+
+    private List<VaultService.VaultUser> users = new();
+    private string newUserEmail = string.Empty;
+    private bool isLoading = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadUsers();
+    }
+
+    private async Task LoadUsers()
+    {
+        if (Vault == null) return;
+
+        isLoading = true;
+        try
+        {
+            users = await VaultService.GetVaultUsersAsync(Vault.Id);
+        }
+        catch (ApiException ex)
+        {
+            Snackbar.Add(ex.Message, Severity.Error);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error loading users: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private async Task ShareVault()
+    {
+        if (Vault == null || string.IsNullOrWhiteSpace(newUserEmail)) return;
+
+        isLoading = true;
+        try
+        {
+            bool success = await VaultService.ShareVaultAsync(Vault.Id, newUserEmail);
+
+            if (success)
+            {
+                Snackbar.Add($"Vault shared with {newUserEmail}", Severity.Success);
+                newUserEmail = string.Empty;
+                await LoadUsers();
+            }
+            else
+            {
+                Snackbar.Add("Failed to share vault", Severity.Error);
+            }
+        }
+        catch (ApiException ex)
+        {
+            Snackbar.Add(ex.Message, Severity.Error);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error sharing vault: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private async Task RemoveUser(VaultService.VaultUser user)
+    {
+        if (Vault == null) return;
+
+        bool? confirm = await DialogService.ShowMessageBox(
+            "Confirm removal",
+            $"Remove access for {user.Email}?",
+            yesText: "Remove",
+            cancelText: "Cancel"
+        );
+
+        if (confirm != true) return;
+
+        try
+        {
+            await VaultService.RemoveUserFromVaultAsync(Vault.Id, user.Id);
+            Snackbar.Add($"Access removed for {user.Email}", Severity.Success);
+            await LoadUsers(); // Recharger la liste
+        }
+        catch (ApiException ex)
+        {
+            Snackbar.Add(ex.Message, Severity.Error);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error removing user: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private void Close() => MudDialog.Close();
+}

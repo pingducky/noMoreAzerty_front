@@ -82,8 +82,7 @@
               "RelativeToolTip": "noMoreAzerty_front\\Pages\\Authentication.razor",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-01-19T23:18:07.265Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-19T23:18:07.265Z"
             },
             {
               "$type": "Document",
@@ -95,8 +94,7 @@
               "RelativeToolTip": "noMoreAzerty_front\\Pages\\Vaults.razor",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAEEAAAAPAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-01-19T23:16:03.655Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-19T23:16:03.655Z"
             },
             {
               "$type": "Document",
@@ -108,8 +106,7 @@
               "RelativeToolTip": "noMoreAzerty_front\\Components\\VaultEntryDialog.razor",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-01-19T23:14:22.987Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-19T23:14:22.987Z"
             },
             {
               "$type": "Document",
@@ -121,8 +118,7 @@
               "RelativeToolTip": "noMoreAzerty_front\\Components\\PasswordDialog.razor",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAApAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-01-19T23:14:22.225Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-19T23:14:22.225Z"
             },
             {
               "$type": "Document",
@@ -134,8 +130,7 @@
               "RelativeToolTip": "noMoreAzerty_front\\Components\\CreateVaultDialog.razor",
               "ViewState": "AgIAAIwAAAAAAAAAAAAAAJoAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-01-19T23:13:18.776Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-19T23:13:18.776Z"
             },
             {
               "$type": "Document",
@@ -147,8 +142,7 @@
               "RelativeToolTip": "noMoreAzerty_front\\Layout\\MainLayout.razor",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAWAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-01-19T23:05:41.407Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-19T23:05:41.407Z"
             },
             {
               "$type": "Document",
@@ -160,8 +154,7 @@
               "RelativeToolTip": "noMoreAzerty_front\\Program.cs",
               "ViewState": "AgIAAAkAAAAAAAAAAAAAABwAAAACAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-19T22:32:31.254Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-19T22:32:31.254Z"
             },
             {
               "$type": "Document",
@@ -173,8 +166,7 @@
               "RelativeToolTip": "noMoreAzerty_front\\Services\\VaultService.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-19T23:01:47.297Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-19T23:01:47.297Z"
             },
             {
               "$type": "Document",
@@ -186,8 +178,7 @@
               "RelativeToolTip": "noMoreAzerty_front\\Handlers\\ProblemDetails.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-19T22:53:04.082Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-19T22:53:04.082Z"
             },
             {
               "$type": "Document",
@@ -199,8 +190,7 @@
               "RelativeToolTip": "noMoreAzerty_front\\Handlers\\HttpErrorHandler.cs",
               "ViewState": "AgIAAA8AAAAAAAAAAAAAAEcAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-19T21:55:23.378Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-19T21:55:23.378Z"
             },
             {
               "$type": "Document",
@@ -210,7 +200,7 @@
               "RelativeDocumentMoniker": "noMoreAzerty_front\\Pages\\VaultEntries.razor",
               "ToolTip": "C:\\Users\\antho\\OneDrive\\Documents\\Cours\\M2\\Architecture .NET\\TP\\noMoreAzerty_front\\noMoreAzerty_front\\Pages\\VaultEntries.razor",
               "RelativeToolTip": "noMoreAzerty_front\\Pages\\VaultEntries.razor",
-              "ViewState": "AgIAAKkAAAAAAAAAAAAAAMQAAAAFAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAMQAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-12-18T14:38:18.216Z",
               "EditorCaption": ""

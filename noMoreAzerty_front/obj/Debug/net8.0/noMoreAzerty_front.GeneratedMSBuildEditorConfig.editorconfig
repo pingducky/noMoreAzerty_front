@@ -7,6 +7,8 @@ build_property.MudDebugAnalyzer =
 build_property.MudAllowedAttributePattern = 
 build_property.MudAllowedAttributeList = 
 build_property.TargetFramework = net8.0
+build_property.TargetFrameworkIdentifier = .NETCoreApp
+build_property.TargetFrameworkVersion = v8.0
 build_property.TargetPlatformMinVersion = 
 build_property.UsingMicrosoftNETSdkWeb = 
 build_property.ProjectTypeGuids = 
@@ -24,6 +26,8 @@ build_property.SupportLocalizedComponentNames =
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
 build_property.MSBuildProjectDirectory = C:\Users\antho\OneDrive\Documents\Cours\M2\Architecture .NET\TP\noMoreAzerty_front\noMoreAzerty_front
 build_property._RazorSourceGeneratorDebug = 
+build_property.EffectiveAnalysisLevelStyle = 8.0
+build_property.EnableCodeStyleSeverity = 
 
 [C:/Users/antho/OneDrive/Documents/Cours/M2/Architecture .NET/TP/noMoreAzerty_front/noMoreAzerty_front/App.razor]
 build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
@@ -33,16 +37,24 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xDb25maXJtRGlhbG9nLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/antho/OneDrive/Documents/Cours/M2/Architecture .NET/TP/noMoreAzerty_front/noMoreAzerty_front/Components/CreateVaultDialog.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xDcmVhdGVWYXVsdERpYWxvZy5yYXpvcg==
+[C:/Users/antho/OneDrive/Documents/Cours/M2/Architecture .NET/TP/noMoreAzerty_front/noMoreAzerty_front/Dialogs/CreateVaultDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xDcmVhdGVWYXVsdERpYWxvZy5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/antho/OneDrive/Documents/Cours/M2/Architecture .NET/TP/noMoreAzerty_front/noMoreAzerty_front/Components/PasswordDialog.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYXNzd29yZERpYWxvZy5yYXpvcg==
+[C:/Users/antho/OneDrive/Documents/Cours/M2/Architecture .NET/TP/noMoreAzerty_front/noMoreAzerty_front/Dialogs/EditVaultDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xFZGl0VmF1bHREaWFsb2cucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/antho/OneDrive/Documents/Cours/M2/Architecture .NET/TP/noMoreAzerty_front/noMoreAzerty_front/Components/VaultEntryDialog.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xWYXVsdEVudHJ5RGlhbG9nLnJhem9y
+[C:/Users/antho/OneDrive/Documents/Cours/M2/Architecture .NET/TP/noMoreAzerty_front/noMoreAzerty_front/Dialogs/PasswordDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xQYXNzd29yZERpYWxvZy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/antho/OneDrive/Documents/Cours/M2/Architecture .NET/TP/noMoreAzerty_front/noMoreAzerty_front/Dialogs/ShareVaultDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xTaGFyZVZhdWx0RGlhbG9nLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/antho/OneDrive/Documents/Cours/M2/Architecture .NET/TP/noMoreAzerty_front/noMoreAzerty_front/Dialogs/VaultEntryDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xWYXVsdEVudHJ5RGlhbG9nLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/antho/OneDrive/Documents/Cours/M2/Architecture .NET/TP/noMoreAzerty_front/noMoreAzerty_front/Layout/LoginDisplay.razor]

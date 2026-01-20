@@ -1,7 +1,6 @@
 ﻿using Microsoft.JSInterop;
-using System.Net.Http;
+using noMoreAzerty_dto.DTOs.Request;
 using System.Text.Json;
-using static noMoreAzerty_front.Services.VaultService;
 
 namespace noMoreAzerty_front.Services
 {
@@ -30,7 +29,7 @@ namespace noMoreAzerty_front.Services
             return JsonSerializer.Deserialize<List<VaultEntry>>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new List<VaultEntry>();
         }
 
-        public async Task<VaultEntry?> CreateEntryAsync(CreateVaultEntryRequestDto createVaultEntryRequest, Guid vaultId)
+        public async Task<VaultEntry?> CreateEntryAsync(CreateVaultEntryRequest createVaultEntryRequest, Guid vaultId)
         {
             var jsonContent = new StringContent(JsonSerializer.Serialize(createVaultEntryRequest), System.Text.Encoding.UTF8, "application/json");
             var response = await _httpClient.PostAsync($"api/vaults/{vaultId}/entries/create", jsonContent);
@@ -41,7 +40,19 @@ namespace noMoreAzerty_front.Services
             var content = await response.Content.ReadAsStringAsync();
             return JsonSerializer.Deserialize<VaultEntry>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
         }
-            
+
+        public async Task<VaultEntry?> UpdateEntryAsync(UpdateVaultEntryRequest updateVaultEntryRequest, Guid vaultId, Guid entryId)
+        {
+            var jsonContent = new StringContent(JsonSerializer.Serialize(updateVaultEntryRequest), System.Text.Encoding.UTF8, "application/json");
+            var response = await _httpClient.PutAsync($"api/vaults/{vaultId}/entries/{entryId}", jsonContent);
+
+            if (!response.IsSuccessStatusCode)
+                return null;
+
+            var content = await response.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<VaultEntry>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
+        }
+
         public async Task<bool> DeleteEntryAsync(Guid vaultId, Guid entryId)
         {           
             var response = await _httpClient.DeleteAsync(
