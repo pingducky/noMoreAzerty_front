@@ -13,7 +13,7 @@
     <PackageReference Include="Microsoft.Authentication.WebAssembly.Msal" Version="8.0.21" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.1" />
     <PackageReference Include="MudBlazor" Version="8.15.0" />
-    <PackageReference Include="NoMoreAzerty.Shared" Version="1.0.6" />
+    <PackageReference Include="NoMoreAzerty.Shared" Version="1.0.9" />
   </ItemGroup>
 
 </Project>

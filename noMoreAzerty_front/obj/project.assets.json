@@ -641,7 +641,7 @@
           "buildMultiTargeting/MudBlazor.props": {}
         }
       },
-      "NoMoreAzerty.Shared/1.0.6": {
+      "NoMoreAzerty.Shared/1.0.9": {
         "type": "package",
         "compile": {
           "lib/net8.0/noMoreAzerty_dto.dll": {}
@@ -1307,7 +1307,7 @@
           "buildMultiTargeting/MudBlazor.props": {}
         }
       },
-      "NoMoreAzerty.Shared/1.0.6": {
+      "NoMoreAzerty.Shared/1.0.9": {
         "type": "package",
         "compile": {
           "lib/net8.0/noMoreAzerty_dto.dll": {}
@@ -2475,15 +2475,15 @@
         "staticwebassets/MudBlazor.min.js"
       ]
     },
-    "NoMoreAzerty.Shared/1.0.6": {
-      "sha512": "oC9RHl6XbJuuId8W3Sk7SOSvrxQCYFBkHQTlRs/w3qpM6l9oCCcIdM007EKsPSYqor5Jck9QDGwNKMsJXpHIHg==",
+    "NoMoreAzerty.Shared/1.0.9": {
+      "sha512": "lAXdmQt0eGmcA+jpqbizOjzBreWmOvMzbqrFAcTZVF5j25HsrP2Riu/B3fweF9Z68t8i02J/cgx+NyYrJVY5Zw==",
       "type": "package",
-      "path": "nomoreazerty.shared/1.0.6",
+      "path": "nomoreazerty.shared/1.0.9",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "lib/net8.0/noMoreAzerty_dto.dll",
-        "nomoreazerty.shared.1.0.6.nupkg.sha512",
+        "nomoreazerty.shared.1.0.9.nupkg.sha512",
         "nomoreazerty.shared.nuspec"
       ]
     },
@@ -2527,7 +2527,7 @@
       "Microsoft.NET.ILLink.Tasks >= 8.0.23",
       "Microsoft.NET.Sdk.WebAssembly.Pack >= 10.0.2",
       "MudBlazor >= 8.15.0",
-      "NoMoreAzerty.Shared >= 1.0.6"
+      "NoMoreAzerty.Shared >= 1.0.9"
     ]
   },
   "packageFolders": {
@@ -2620,7 +2620,7 @@
           },
           "NoMoreAzerty.Shared": {
             "target": "Package",
-            "version": "[1.0.6, )"
+            "version": "[1.0.9, )"
           }
         },
         "imports": [

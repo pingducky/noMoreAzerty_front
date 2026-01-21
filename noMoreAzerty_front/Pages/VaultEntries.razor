@@ -5,6 +5,7 @@
 @using noMoreAzerty_dto.DTOs.Response;
 @inject VaultService VaultService
 @inject VaultEntryService VaultEntryService
+@inject VaultKeyManager KeyManager
 @inject NavigationManager Navigation
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
@@ -89,16 +90,11 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Console.WriteLine("=== VaultEntries OnInitializedAsync ===");
-        Console.WriteLine($"CurrentVault: {VaultService.CurrentVault?.Name}");
-        Console.WriteLine($"Password: {(VaultService.Password != null ? "SET" : "NULL")}");
-        Console.WriteLine($"Salt: {(VaultService.Salt != null ? "SET" : "NULL")}");
-
         Vault = VaultService.CurrentVault;
 
-        if (Vault == null || VaultService.Password == null || VaultService.Salt == null)
+        // Vérifier si le vault est déverrouillé
+        if (Vault == null || !KeyManager.IsVaultUnlocked(VaultId))
         {
-            Console.WriteLine("⚠️ Missing vault data, redirecting to /");
             Navigation.NavigateTo("/");
             return;
         }
@@ -116,12 +112,15 @@
             if (metadata == null || !metadata.Any())
                 return;
 
+            // Récupérer la clé de chiffrement / déchiffrement
+            var keyDerivation = await KeyManager.GetDerivationKeyAsync(VaultId);
+
             // Déchiffrer uniquement les titres
             foreach (var entry in metadata)
             {
                 var decryptedTitle = await JS.InvokeAsync<string>(
                     "decryptAesGcm",
-                    VaultService.Password,
+                    keyDerivation,
                     VaultService.Salt,
                     entry.TitleIV,
                     entry.TitleTag,
@@ -159,10 +158,13 @@
                 return;
             }
 
+            // Récupérer la clé de chiffrement / déchiffrement
+            var keyDerivation = await KeyManager.GetDerivationKeyAsync(VaultId);
+
             // Déchiffrer tous les champs
             entry.CipherTitle = await JS.InvokeAsync<string>(
                 "decryptAesGcm",
-                VaultService.Password,
+                keyDerivation,
                 VaultService.Salt,
                 entry.TitleIV,
                 entry.TitleTag,
@@ -172,7 +174,7 @@
 
             entry.CipherUsername = await JS.InvokeAsync<string>(
                 "decryptAesGcm",
-                VaultService.Password,
+                keyDerivation,
                 VaultService.Salt,
                 entry.UsernameIV,
                 entry.UsernameTag,
@@ -182,7 +184,7 @@
 
             entry.CipherUrl = await JS.InvokeAsync<string>(
                 "decryptAesGcm",
-                VaultService.Password,
+                keyDerivation,
                 VaultService.Salt,
                 entry.UrlIV,
                 entry.UrlTag,
@@ -192,7 +194,7 @@
 
             entry.CipherPassword = await JS.InvokeAsync<string>(
                 "decryptAesGcm",
-                VaultService.Password,
+                keyDerivation,
                 VaultService.Salt,
                 entry.PasswordIV,
                 entry.PasswordTag,
@@ -202,7 +204,7 @@
 
             entry.CipherCommentary = await JS.InvokeAsync<string>(
                 "decryptAesGcm",
-                VaultService.Password,
+                keyDerivation,
                 VaultService.Salt,
                 entry.ComentaryIV,
                 entry.ComentaryTag,
@@ -277,19 +279,15 @@
 
     private async Task AddEntry(GetVaultEntriesResponse newEntry)
     {
-        // Recharger la liste des métadonnées
+        entriesMetadata.Clear();
         await LoadEntriesMetadata();
         StateHasChanged();
     }
 
-    private void UpdateEntry(GetVaultEntriesResponse updatedEntry)
+    private async Task UpdateEntry(GetVaultEntriesResponse updatedEntry)
     {
-        // Mettre à jour le titre dans la liste
-        var metadata = entriesMetadata.FirstOrDefault(e => e.Id == updatedEntry.Id);
-        if (metadata != null)
-        {
-            metadata.DecryptedTitle = updatedEntry.CipherTitle ?? string.Empty;
-            StateHasChanged();
-        }
+        entriesMetadata.Clear();
+        await LoadEntriesMetadata();
+        StateHasChanged();
     }
 }

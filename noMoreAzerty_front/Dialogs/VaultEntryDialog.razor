@@ -3,6 +3,7 @@
 @using noMoreAzerty_dto.DTOs.Request;
 @using noMoreAzerty_dto.DTOs.Response;
 @inject VaultEntryService VaultEntryService
+@inject VaultKeyManager KeyManager
 @inject VaultService VaultService
 @inject ISnackbar Snackbar
 @attribute [Authorize]
@@ -216,34 +217,43 @@
     {
         if (!string.IsNullOrWhiteSpace(Title) && !string.IsNullOrWhiteSpace(Password))
         {
+            // Récupérer la clé de chiffrement / déchiffrement
+            var keyDerivation = await KeyManager.GetDerivationKeyAsync(VaultService.CurrentVault.Id);
+
+            if (string.IsNullOrEmpty(keyDerivation))
+            {
+                Snackbar.Add("Vault is locked", Severity.Error);
+                return;
+            }
+
             // Chiffrement côté JS
             var titleResult = await JS.InvokeAsync<Dictionary<string, string>>(
                 "encryptAesGcm",
-                VaultService.Password,
+                keyDerivation,
                 VaultService.Salt,
                 Title
             );
             var usernameResult = await JS.InvokeAsync<Dictionary<string, string>>(
                 "encryptAesGcm",
-                VaultService.Password,
+                keyDerivation,
                 VaultService.Salt,
                 Username
             );
             var passwordResult = await JS.InvokeAsync<Dictionary<string, string>>(
                 "encryptAesGcm",
-                VaultService.Password,
+                keyDerivation,
                 VaultService.Salt,
                 Password
             );
             var urlResult = await JS.InvokeAsync<Dictionary<string, string>>(
                 "encryptAesGcm",
-                VaultService.Password,
+                keyDerivation,
                 VaultService.Salt,
                 Url
             );
             var commentaryResult = await JS.InvokeAsync<Dictionary<string, string>>(
                 "encryptAesGcm",
-                VaultService.Password,
+                keyDerivation,
                 VaultService.Salt,
                 Commentary
             );

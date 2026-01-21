@@ -1,5 +1,4 @@
 ﻿async function encryptAesGcm(password, salt, data, iterations = 100000) {
-    //const salt = window.generateSalt(16);
     const iv = window.crypto.getRandomValues(new Uint8Array(12));
     const key = await window.deriveKey(password, Uint8Array.from(atob(salt), c => c.charCodeAt(0)), iterations);
 
