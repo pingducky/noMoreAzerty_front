@@ -1,0 +1,274 @@
+﻿@page "/logs"
+@using Microsoft.AspNetCore.Authorization
+@using noMoreAzerty_front.Services
+@using noMoreAzerty_dto.DTOs.Response
+@inject UserLogsService UserLogsService
+@inject ISnackbar Snackbar
+@attribute [Authorize]
+
+<PageTitle>User Logs</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Large">
+    <MudText Typo="Typo.h4" Class="mb-4">User Activity Logs</MudText>
+
+    @if (isAdmin == false)
+    {
+        <MudAlert Severity="Severity.Warning">You need admin privileges to access this page.</MudAlert>
+    }
+    else if (isLoading)
+    {
+        <MudProgressCircular Indeterminate="true" />
+    }
+    else
+    {
+        <MudStack Spacing="3">
+            <MudPaper Class="pa-4" Elevation="2">
+                <MudStack Spacing="2">
+                    <MudSelect T="Guid ?" Label="Select User" @bind-Value="selectedUserId" Variant="Variant.Outlined">
+                        @foreach (var user in users)
+                        {
+                            <MudSelectItem Value="@((Guid?)user.Id)">
+                                @user.Id.ToString()[..8]...
+                                @if (user.IsActive)
+                                {
+                                    <MudChip T="string" Size="Size.Small" Color="Color.Success">Active</MudChip>
+                                }
+                                else
+                                {
+                                    <MudChip T="string" Size="Size.Small" Color="Color.Default">Inactive</MudChip>
+                                }
+                            </MudSelectItem>
+                        }
+                    </MudSelect>
+
+                    @if (selectedUserId.HasValue)
+                    {
+                        var user = users.FirstOrDefault(u => u.Id == selectedUserId.Value);
+                        if (user != null)
+                        {
+                            <MudStack Row="true" Spacing="2">
+                                <MudText Typo="Typo.body2">
+                                    <strong>Created:</strong> @user.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy")
+                                </MudText>
+                                @if (user.LastLogin.HasValue)
+                                {
+                                    <MudText Typo="Typo.body2">
+                                        <strong>Last Login:</strong> @user.LastLogin.Value.ToLocalTime().ToString("dd/MM/yyyy HH:mm")
+                                    </MudText>
+                                }
+                            </MudStack>
+                        }
+                    }
+
+                    <MudText Typo="Typo.subtitle2" Class="mt-2">Filter by Action:</MudText>
+                    <MudStack Row="true" Spacing="2">
+                        <MudCheckBox @bind-Value="filterCreate" Label="Create" Color="Color.Primary" />
+                        <MudCheckBox @bind-Value="filterRead" Label="Read" Color="Color.Info" />
+                        <MudCheckBox @bind-Value="filterUpdate" Label="Update" Color="Color.Warning" />
+                        <MudCheckBox @bind-Value="filterDelete" Label="Delete" Color="Color.Error" />
+                    </MudStack>
+
+                    <MudButton Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               OnClick="LoadLogs"
+                               FullWidth="true"
+                               Disabled="!selectedUserId.HasValue">
+                        Load Logs
+                    </MudButton>
+                </MudStack>
+            </MudPaper>
+
+            @if (isLoadingLogs)
+            {
+                <MudProgressCircular Indeterminate="true" />
+            }
+            else if (logsResponse != null && logsResponse.Items.Any())
+            {
+                <MudTable Items="@logsResponse.Items" Hover="true" Striped="true" Elevation="2">
+                    <HeaderContent>
+                        <MudTh>Date & Time</MudTh>
+                        <MudTh>Action</MudTh>
+                        <MudTh>Vault ID</MudTh>
+                        <MudTh>Entry ID</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Date & Time">
+                            @context.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm:ss")
+                        </MudTd>
+                        <MudTd DataLabel="Action">
+                            <MudChip T="string" Color="@GetActionColor(context.Action)" Size="Size.Small">
+                                @context.Action
+                            </MudChip>
+                        </MudTd>
+                        <MudTd DataLabel="Vault ID">
+                            <MudText Typo="Typo.body2" Style="font-family: monospace;">
+                                @context.VaultId.ToString()[..8]...
+                            </MudText>
+                        </MudTd>
+                        <MudTd DataLabel="Entry ID">
+                            <MudText Typo="Typo.body2" Style="font-family: monospace;">
+                                @context.EntryId.ToString()[..8]...
+                            </MudText>
+                        </MudTd>
+                    </RowTemplate>
+                </MudTable>
+
+                <MudStack Row="true" Justify="Justify.Center" AlignItems="AlignItems.Center" Class="mt-4">
+                    <MudButton Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               Disabled="@(currentPage <= 1)"
+                               OnClick="@(() => ChangePage(currentPage - 1))">
+                        <MudIcon Icon="@Icons.Material.Filled.ArrowBack" Class="mr-1" />
+                        Previous
+                    </MudButton>
+
+                    <MudText>
+                        Page <strong>@currentPage</strong> of <strong>@logsResponse.TotalPages</strong>
+                        (@logsResponse.TotalCount total logs)
+                    </MudText>
+
+                    <MudButton Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               Disabled="@(currentPage >= logsResponse.TotalPages)"
+                               OnClick="@(() => ChangePage(currentPage + 1))">
+                        Next
+                        <MudIcon Icon="@Icons.Material.Filled.ArrowForward" Class="ml-1" />
+                    </MudButton>
+                </MudStack>
+            }
+            else if (selectedUserId.HasValue && !isLoadingLogs)
+            {
+                <MudAlert Severity="Severity.Info">No logs found for the selected user and filters.</MudAlert>
+            }
+        </MudStack>
+    }
+</MudContainer>
+
+@code {
+    private List<UserListItemResponse> users = [];
+    private Guid? selectedUserId;
+    private PagedLogsResponse? logsResponse;
+    private bool isLoading = true;
+    private bool isLoadingLogs = false;
+    private bool? isAdmin = null;
+    private int currentPage = 1;
+    private int pageSize = 10;
+
+    private bool filterCreate = false;
+    private bool filterRead = false;
+    private bool filterUpdate = false;
+    private bool filterDelete = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            users = await UserLogsService.GetAllUsersAsync();
+            isAdmin = users.Any(); // Si on peut récupérer les users, on est admin
+
+            // Trier les utilisateurs : actifs en premier, puis par date de création décroissante
+            users = users
+                .OrderByDescending(u => u.IsActive)
+                .ThenByDescending(u => u.CreatedAt)
+                .ToList();
+        }
+        catch (Exception ex)
+        {
+            isAdmin = false;
+            Snackbar.Add($"Error loading users: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private async Task LoadLogs()
+    {
+        if (!selectedUserId.HasValue)
+        {
+            Snackbar.Add("Please select a user", Severity.Warning);
+            return;
+        }
+
+        isLoadingLogs = true;
+        currentPage = 1;
+
+        try
+        {
+            var actions = GetSelectedActions();
+            logsResponse = await UserLogsService.GetUserLogsAsync(
+                selectedUserId.Value,
+                actions,
+                currentPage,
+                pageSize
+            );
+
+            if (logsResponse == null)
+            {
+                Snackbar.Add("Error loading logs", Severity.Error);
+            }
+            else if (!logsResponse.Items.Any())
+            {
+                Snackbar.Add("No logs found", Severity.Info);
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            isLoadingLogs = false;
+        }
+    }
+
+    private async Task ChangePage(int newPage)
+    {
+        if (!selectedUserId.HasValue) return;
+
+        currentPage = newPage;
+        isLoadingLogs = true;
+
+        try
+        {
+            var actions = GetSelectedActions();
+            logsResponse = await UserLogsService.GetUserLogsAsync(
+                selectedUserId.Value,
+                actions,
+                currentPage,
+                pageSize
+            );
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            isLoadingLogs = false;
+        }
+    }
+
+    private string[]? GetSelectedActions()
+    {
+        var actions = new List<string>();
+        if (filterCreate) actions.Add("Create");
+        if (filterRead) actions.Add("Read");
+        if (filterUpdate) actions.Add("Update");
+        if (filterDelete) actions.Add("Delete");
+        return actions.Any() ? actions.ToArray() : null;
+    }
+
+    private Color GetActionColor(string action)
+    {
+        return action.ToLower() switch
+        {
+            "create" => Color.Primary,
+            "read" => Color.Info,
+            "update" => Color.Warning,
+            "delete" => Color.Error,
+            _ => Color.Default
+        };
+    }
+}

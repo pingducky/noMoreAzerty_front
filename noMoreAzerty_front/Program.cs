@@ -36,5 +36,6 @@ builder.Services.AddHttpClient("API", client =>
 builder.Services.AddScoped<VaultService>();
 builder.Services.AddScoped<VaultEntryService>();
 builder.Services.AddScoped<VaultKeyManager>();
+builder.Services.AddScoped<UserLogsService>();
 
 await builder.Build().RunAsync();
