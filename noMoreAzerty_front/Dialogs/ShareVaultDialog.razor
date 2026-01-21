@@ -1,5 +1,6 @@
 @using Microsoft.AspNetCore.Authorization
 @using noMoreAzerty_front.Handlers
+@using noMoreAzerty_dto.DTOs.Response
 @inject VaultService VaultService
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
@@ -92,7 +93,7 @@
 
 @code {
     [CascadingParameter] IMudDialogInstance MudDialog { get; set; } = default!;
-    [Parameter] public VaultService.Vault? Vault { get; set; }
+    [Parameter] public GetVaultResponse? Vault { get; set; }
 
     private List<VaultService.VaultUser> users = new();
     private string newUserEmail = string.Empty;

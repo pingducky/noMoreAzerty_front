@@ -1,4 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Authorization
+@using noMoreAzerty_dto.DTOs.Request
+@using noMoreAzerty_dto.DTOs.Response
 @using noMoreAzerty_front.Handlers
 @using static noMoreAzerty_front.Services.VaultService
 @inject VaultService VaultService
@@ -78,7 +80,7 @@
 
 @code {
     [CascadingParameter] IMudDialogInstance MudDialog { get; set; } = default!;
-    [Parameter] public EventCallback<VaultService.Vault> OnSave { get; set; }
+    [Parameter] public EventCallback<GetVaultResponse> OnSave { get; set; }
 
     [Inject] IJSRuntime JS { get; set; } = default!;
 
@@ -139,7 +141,7 @@
             // Appel JS pour générer un salt aléatoire de 32 octets
             var salt = await JS.InvokeAsync<string>("generateSalt", 32);
 
-            CreateVaultRequestDto createVaultRequestDto = new CreateVaultRequestDto
+            CreateVaultRequest createVaultRequestDto = new CreateVaultRequest
                 {
                     Name = VaultName,
                     DerivedPassword = Password,
@@ -151,7 +153,7 @@
 
             try
             {
-                Vault vault = await VaultService.CreateVaultAsync(createVaultRequestDto);
+                GetVaultResponse vault = await VaultService.CreateVaultAsync(createVaultRequestDto);
 
                 await OnSave.InvokeAsync(vault);
 

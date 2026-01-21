@@ -1,6 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Authorization
 @using noMoreAzerty_front.Handlers
 @using noMoreAzerty_dto.DTOs.Request;
+@using noMoreAzerty_dto.DTOs.Response;
 @inject VaultEntryService VaultEntryService
 @inject VaultService VaultService
 @inject ISnackbar Snackbar
@@ -127,8 +128,8 @@
 @code {
     [Inject] IJSRuntime JS { get; set; } = default!;
     [CascadingParameter] IMudDialogInstance MudDialog { get; set; } = default!;
-    [Parameter] public EventCallback<VaultEntryService.VaultEntry> OnSave { get; set; }
-    [Parameter] public VaultEntryService.VaultEntry? Entry { get; set; }
+    [Parameter] public EventCallback<GetVaultEntriesResponse> OnSave { get; set; }
+    [Parameter] public GetVaultEntriesResponse? Entry { get; set; }
 
     private bool IsEdit { get; set; } = false;
 
@@ -247,7 +248,7 @@
                 Commentary
             );
 
-            VaultEntryService.VaultEntry? vaultEntry = null;
+            GetVaultEntriesResponse? vaultEntry = null;
 
             try
             {

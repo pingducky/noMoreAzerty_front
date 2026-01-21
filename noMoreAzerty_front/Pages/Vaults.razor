@@ -1,6 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Authorization
 @using noMoreAzerty_front.Dialogs
 @using noMoreAzerty_front.Handlers
+@using noMoreAzerty_dto.DTOs.Response;
 @using static noMoreAzerty_front.Services.VaultService
 @inject VaultService VaultService
 @inject IDialogService DialogService
@@ -79,9 +80,9 @@
 
 
 @code {
-    private List<VaultService.Vault> vaults = new();
+    private List<GetVaultResponse> vaults = new();
 
-    private VaultService.Vault? selectedVault;
+    private GetVaultResponse? selectedVault;
 
     private bool isLoading { get; set; }
 
@@ -105,18 +106,18 @@
         isLoading = false;
     }
 
-    private async Task SelectVault(VaultService.Vault vault)
+    private async Task SelectVault(GetVaultResponse vault)
     {
         selectedVault = vault;
         await OpenPasswordDialog(vault);
     }
 
-    private void AddVault(VaultService.Vault newVault)
+    private void AddVault(GetVaultResponse newVault)
     {
         vaults.Add(newVault);
     }
 
-    private void UpdateVault(VaultService.Vault updatedVault)
+    private void UpdateVault(GetVaultResponse updatedVault)
     {
         var index = vaults.FindIndex(v => v.Id == updatedVault.Id);
         if (index != -1)
@@ -126,7 +127,7 @@
         }
     }
 
-    private async void DeleteVault(VaultService.Vault vault)
+    private async void DeleteVault(GetVaultResponse vault)
     {
         bool? confirm = await DialogService.ShowMessageBox(
             "Confirm deletion",
@@ -155,7 +156,7 @@
     {
         var parameters = new DialogParameters
         {
-            { "OnSave", EventCallback.Factory.Create<VaultService.Vault>(this, AddVault) }
+            { "OnSave", EventCallback.Factory.Create<GetVaultResponse>(this, AddVault) }
         };
     
         var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true };
@@ -163,12 +164,12 @@
         await DialogService.ShowAsync<CreateVaultDialog>("Create Vault", parameters, options);
     }
 
-    private async Task OpenEditDialog(VaultService.Vault vault)
+    private async Task OpenEditDialog(GetVaultResponse vault)
     {
         var parameters = new DialogParameters
         {
             { "Vault", vault },
-            { "OnSave", EventCallback.Factory.Create<VaultService.Vault>(this, UpdateVault) }
+            { "OnSave", EventCallback.Factory.Create<GetVaultResponse>(this, UpdateVault) }
         };
 
         var options = new DialogOptions
@@ -181,7 +182,7 @@
         await DialogService.ShowAsync<EditVaultDialog>("Edit Vault", parameters, options);
     }
 
-    private async Task OpenPasswordDialog(VaultService.Vault vault)
+    private async Task OpenPasswordDialog(GetVaultResponse vault)
     {
         var parameters = new DialogParameters
         {
@@ -193,7 +194,7 @@
         await DialogService.ShowAsync<PasswordDialog>("Enter Password", parameters, options);
     }
 
-    private async Task OpenShareDialog(VaultService.Vault vault)
+    private async Task OpenShareDialog(GetVaultResponse vault)
     {
         var parameters = new DialogParameters
         {

@@ -1,12 +1,13 @@
 ﻿using Microsoft.JSInterop;
 using noMoreAzerty_dto.DTOs.Request;
+using noMoreAzerty_dto.DTOs.Response;
 using System.Text.Json;
 
 namespace noMoreAzerty_front.Services
 {
     public class VaultEntryService
     {
-        public List<VaultEntry>? Entries { get; set; }
+        public List<VaultEntryMetadata>? Entries { get; set; }
 
         private readonly HttpClient _httpClient;
 
@@ -15,21 +16,29 @@ namespace noMoreAzerty_front.Services
             _httpClient = httpClientFactory.CreateClient("API");
         }
 
-        public async Task<List<VaultEntry>?> GetEntriesByVaultIdAsync(VaultAccessRequestDto request, Guid vaultId)
+        public async Task<List<VaultEntryMetadata>?> GetEntriesMetadataAsync(Guid vaultId)
         {
-            var jsonContent = new StringContent(JsonSerializer.Serialize(request), System.Text.Encoding.UTF8, "application/json");
-            var response = await _httpClient.PostAsync($"api/vaults/{vaultId}/entries/access", jsonContent);
+            var response = await _httpClient.GetAsync($"api/vaults/{vaultId}/entries/metadata");
 
             if (!response.IsSuccessStatusCode)
-            {
                 return null;
-            }
 
             var content = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<List<VaultEntry>>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new List<VaultEntry>();
+            return JsonSerializer.Deserialize<List<VaultEntryMetadata>>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         }
 
-        public async Task<VaultEntry?> CreateEntryAsync(CreateVaultEntryRequest createVaultEntryRequest, Guid vaultId)
+        public async Task<GetVaultEntriesResponse?> GetEntryByIdAsync(Guid vaultId, Guid entryId)
+        {
+            var response = await _httpClient.GetAsync($"api/vaults/{vaultId}/entries/{entryId}");
+
+            if (!response.IsSuccessStatusCode)
+                return null;
+
+            var content = await response.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<GetVaultEntriesResponse>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+        }
+
+        public async Task<GetVaultEntriesResponse?> CreateEntryAsync(CreateVaultEntryRequest createVaultEntryRequest, Guid vaultId)
         {
             var jsonContent = new StringContent(JsonSerializer.Serialize(createVaultEntryRequest), System.Text.Encoding.UTF8, "application/json");
             var response = await _httpClient.PostAsync($"api/vaults/{vaultId}/entries/create", jsonContent);
@@ -38,10 +47,10 @@ namespace noMoreAzerty_front.Services
                 return null;
 
             var content = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<VaultEntry>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
+            return JsonSerializer.Deserialize<GetVaultEntriesResponse>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
         }
 
-        public async Task<VaultEntry?> UpdateEntryAsync(UpdateVaultEntryRequest updateVaultEntryRequest, Guid vaultId, Guid entryId)
+        public async Task<GetVaultEntriesResponse?> UpdateEntryAsync(UpdateVaultEntryRequest updateVaultEntryRequest, Guid vaultId, Guid entryId)
         {
             var jsonContent = new StringContent(JsonSerializer.Serialize(updateVaultEntryRequest), System.Text.Encoding.UTF8, "application/json");
             var response = await _httpClient.PutAsync($"api/vaults/{vaultId}/entries/{entryId}", jsonContent);
@@ -50,7 +59,7 @@ namespace noMoreAzerty_front.Services
                 return null;
 
             var content = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<VaultEntry>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
+            return JsonSerializer.Deserialize<GetVaultEntriesResponse>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
         }
 
         public async Task<bool> DeleteEntryAsync(Guid vaultId, Guid entryId)
@@ -61,7 +70,7 @@ namespace noMoreAzerty_front.Services
             return response.IsSuccessStatusCode;
         }
 
-        public async Task<CreateVaultEntryRequestDto> EncryptVaultEntryAsync(
+        public async Task<CreateVaultEntryRequest> EncryptVaultEntryAsync(
             string password, string salt, string title, string username, string passwordValue, string url, string commentary, IJSRuntime js)
         {
             var titleResult = await js.InvokeAsync<Dictionary<string, string>>("encryptAesGcm", password, salt, title);
@@ -70,7 +79,7 @@ namespace noMoreAzerty_front.Services
             var urlResult = await js.InvokeAsync<Dictionary<string, string>>("encryptAesGcm", password, salt, url);
             var commentaryResult = await js.InvokeAsync<Dictionary<string, string>>("encryptAesGcm", password, salt, commentary);
 
-            return new CreateVaultEntryRequestDto
+            return new CreateVaultEntryRequest
             {
                 CipherTitle = titleResult["ciphertext"],
                 TitleIV = titleResult["iv"],
@@ -90,7 +99,7 @@ namespace noMoreAzerty_front.Services
             };
         }
 
-        public async Task<VaultEntry> DecryptVaultEntryAsync(VaultEntry entry, string password, string salt, IJSRuntime js)
+        public async Task<GetVaultEntriesResponse> DecryptVaultEntryAsync(GetVaultEntriesResponse entry, string password, string salt, IJSRuntime js)
         {
             // Appelle "decryptAesGcm" côté JS pour chaque champ
             // À adapter selon ta structure
@@ -102,43 +111,14 @@ namespace noMoreAzerty_front.Services
             return entry;
         }
 
-        public class CreateVaultEntryRequestDto
-        {
-            public string? CipherTitle { get; set; }
-            public string? TitleIV { get; set; }
-            public string? TitleTag { get; set; }
-            public string? CipherUsername { get; set; }
-            public string? UsernameIV { get; set; }
-            public string? UsernameTag { get; set; }
-            public string? CipherPassword { get; set; }
-            public string? PasswordIV { get; set; }
-            public string? PasswordTag { get; set; }
-            public string? CipherUrl { get; set; }
-            public string? UrlIV { get; set; }
-            public string? UrlTag { get; set; }
-            public string? CipherCommentary { get; set; }
-            public string? ComentaryIV { get; set; }
-            public string? ComentaryTag { get; set; }
-        }
 
-        public class VaultEntry
+
+        public class VaultEntryMetadata
         {
             public Guid Id { get; set; }
             public string? CipherTitle { get; set; }
             public string? TitleIV { get; set; }
             public string? TitleTag { get; set; }
-            public string? CipherUsername { get; set; }
-            public string? UsernameIV { get; set; }
-            public string? UsernameTag { get; set; }
-            public string? CipherPassword { get; set; }
-            public string? PasswordIV { get; set; }
-            public string? PasswordTag { get; set; }
-            public string? CipherUrl { get; set; }
-            public string? UrlIV { get; set; }
-            public string? UrlTag { get; set; }
-            public string? CipherCommentary { get; set; }
-            public string? ComentaryIV { get; set; }
-            public string? ComentaryTag { get; set; }
             public DateTime? CreatedAt { get; set; }
             public DateTime? UpdatedAt { get; set; }
         }
@@ -150,5 +130,6 @@ namespace noMoreAzerty_front.Services
             /// </summary>
             public string Password { get; set; } = null!;
         }
+
     }
 }
