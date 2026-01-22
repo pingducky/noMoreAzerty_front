@@ -9,7 +9,7 @@
 <MudDialog MaxWidth="MaxWidth.Medium" FullWidth="true">
     <TitleContent>
         <MudText Typo="Typo.h6">
-            Share Vault: @Vault?.Name
+            Share Vault: @vaultUsersData?.VaultName
         </MudText>
     </TitleContent>
 
@@ -18,19 +18,19 @@
         <MudCard Class="mb-4" Elevation="0" Outlined="true">
             <MudCardContent>
                 <MudText Typo="Typo.subtitle1" Class="mb-2">Share with a user</MudText>
-                
+
                 <MudStack Row="true" AlignItems="AlignItems.Center">
-                    <MudTextField @bind-Value="newUserEmail"
-                                  Label="Email"
+                    <MudTextField @bind-Value="newUserName"
+                                  Label="Name"
                                   Variant="Variant.Outlined"
                                   Margin="Margin.Dense"
                                   FullWidth
                                   Disabled="@isLoading" />
-                    
+
                     <MudButton OnClick="ShareVault"
                                Color="Color.Primary"
                                Variant="Variant.Filled"
-                               Disabled="@(string.IsNullOrWhiteSpace(newUserEmail) || isLoading)"
+                               Disabled="@(string.IsNullOrWhiteSpace(newUserName) || isLoading)"
                                StartIcon="@Icons.Material.Filled.Share">
                         Share
                     </MudButton>
@@ -47,7 +47,7 @@
                 {
                     <MudProgressCircular Size="Size.Small" Indeterminate="true" />
                 }
-                else if (!users.Any())
+                else if (vaultUsersData == null || !vaultUsersData.Users.Any())
                 {
                     <MudText Color="Color.Secondary" Typo="Typo.body2">
                         Only you have access to this vault
@@ -55,19 +55,24 @@
                 }
                 else
                 {
-                    <MudList Dense="true" T="string">
-                        @foreach (var user in users)
+                    <MudList T="string" Dense="true">
+                        @foreach (var user in vaultUsersData.Users)
                         {
                             <MudListItem T="string">
                                 <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
                                     <div>
-                                        <MudText Typo="Typo.body1">
-                                            @user.Email
-                                            @if (user.IsOwner)
-                                            {
-                                                <MudChip T="string" Size="Size.Small" Color="Color.Primary" Class="ml-2">Owner</MudChip>
-                                            }
-                                        </MudText>
+                                        <MudStack Spacing="1">
+                                            <MudText Typo="Typo.body1">
+                                                @user.Name
+                                                @if (user.IsOwner)
+                                                {
+                                                    <MudChip T="string" Size="Size.Small" Color="Color.Primary" Class="ml-2">Owner</MudChip>
+                                                }
+                                            </MudText>
+                                            <MudText Typo="Typo.caption" Color="Color.Secondary">
+                                                @(user.IsOwner ? "Created" : "Shared") @user.SharedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")
+                                            </MudText>
+                                        </MudStack>
                                     </div>
 
                                     @if (!user.IsOwner)
@@ -79,6 +84,7 @@
                                     }
                                 </MudStack>
                             </MudListItem>
+                            <MudDivider />
                         }
                     </MudList>
                 }
@@ -95,8 +101,8 @@
     [CascadingParameter] IMudDialogInstance MudDialog { get; set; } = default!;
     [Parameter] public GetVaultResponse? Vault { get; set; }
 
-    private List<VaultService.VaultUser> users = new();
-    private string newUserEmail = string.Empty;
+    private VaultUsersResponse? vaultUsersData;
+    private string newUserName = string.Empty;
     private bool isLoading = false;
 
     protected override async Task OnInitializedAsync()
@@ -111,7 +117,12 @@
         isLoading = true;
         try
         {
-            users = await VaultService.GetVaultUsersAsync(Vault.Id);
+            vaultUsersData = await VaultService.GetVaultUsersAsync(Vault.Id);
+
+            if (vaultUsersData == null)
+            {
+                Snackbar.Add("Failed to load users", Severity.Error);
+            }
         }
         catch (ApiException ex)
         {
@@ -129,17 +140,17 @@
 
     private async Task ShareVault()
     {
-        if (Vault == null || string.IsNullOrWhiteSpace(newUserEmail)) return;
+        if (Vault == null || string.IsNullOrWhiteSpace(newUserName)) return;
 
         isLoading = true;
         try
         {
-            bool success = await VaultService.ShareVaultAsync(Vault.Id, newUserEmail);
+            bool success = await VaultService.ShareVaultAsync(Vault.Id, newUserName);
 
             if (success)
             {
-                Snackbar.Add($"Vault shared with {newUserEmail}", Severity.Success);
-                newUserEmail = string.Empty;
+                Snackbar.Add($"Vault shared with {newUserName}", Severity.Success);
+                newUserName = string.Empty;
                 await LoadUsers();
             }
             else
@@ -161,24 +172,32 @@
         }
     }
 
-    private async Task RemoveUser(VaultService.VaultUser user)
+    private async Task RemoveUser(VaultUserDto user)
     {
         if (Vault == null) return;
 
         bool? confirm = await DialogService.ShowMessageBox(
-            "Confirm removal",
-            $"Remove access for {user.Email}?",
+            "Confirm deletion",
+            $"Remove {user.Name} from this vault?",
             yesText: "Remove",
-            cancelText: "Cancel"
-        );
+            cancelText: "Cancel");
 
         if (confirm != true) return;
 
+        isLoading = true;
         try
         {
-            await VaultService.RemoveUserFromVaultAsync(Vault.Id, user.Id);
-            Snackbar.Add($"Access removed for {user.Email}", Severity.Success);
-            await LoadUsers(); // Recharger la liste
+            bool success = await VaultService.RemoveUserFromVaultAsync(Vault.Id, user.UserId);
+
+            if (success)
+            {
+                Snackbar.Add($"{user.Name} removed from vault", Severity.Success);
+                await LoadUsers();
+            }
+            else
+            {
+                Snackbar.Add("Failed to remove user", Severity.Error);
+            }
         }
         catch (ApiException ex)
         {
@@ -188,7 +207,14 @@
         {
             Snackbar.Add($"Error removing user: {ex.Message}", Severity.Error);
         }
+        finally
+        {
+            isLoading = false;
+        }
     }
 
-    private void Close() => MudDialog.Close();
+    private void Close()
+    {
+        MudDialog.Close();
+    }
 }

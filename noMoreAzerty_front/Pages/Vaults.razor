@@ -34,53 +34,91 @@
             Loading vaults...
         </MudText>
     }
-    else if (!vaults.Any())
-    {
-        <MudText Color="Color.Secondary">
-            No vault find !
-        </MudText>
-    }
     else
     {
-        <MudStack Spacing="2">
-            @foreach (var vault in vaults)
-            {
-                <MudPaper Elevation="1"
-                          Class="@($"vault-card {(selectedVault?.Id == vault.Id ? "selected" : "")}")"
-                          @onclick="() => SelectVault(vault)">
+        <!-- Mes coffres -->
+        @if (!vaults.Any())
+        {
+            <MudText Color="Color.Secondary">
+                No vault found!
+            </MudText>
+        }
+        else
+        {
+            <MudStack Spacing="2" Class="mb-4">
+                @foreach (var vault in vaults)
+                {
+                    <MudPaper Elevation="1"
+                              Class="@($"vault-card {(selectedVault?.Id == vault.Id ? "selected" : "")}")"
+                              @onclick="() => SelectVault(vault)">
 
-                    <MudStack Row="true" AlignItems="AlignItems.Center">
-                        <MudText Typo="Typo.subtitle1">
-                            @vault.Name
-                        </MudText>
+                        <MudStack Row="true" AlignItems="AlignItems.Center">
+                            <MudText Typo="Typo.subtitle1">
+                                @vault.Name
+                            </MudText>
 
-                        <MudSpacer />
+                            <MudSpacer />
 
-                        <MudIconButton Color="Color.Default"
-                                       OnClick="@(() => OpenEditDialog(vault))"
-                                       Icon="@Icons.Material.Filled.Edit"
-                                       Title="Edit vault name" />
+                            <MudIconButton Color="Color.Default"
+                                           OnClick="@(() => OpenEditDialog(vault))"
+                                           Icon="@Icons.Material.Filled.Edit"
+                                           Title="Edit vault name" />
 
-                        <MudIconButton Color="Color.Primary"
-                                       OnClick="@(() => OpenShareDialog(vault))"
-                                       Icon="@Icons.Material.Filled.Share"
-                                       Title="Share vault" />
+                            <MudIconButton Color="Color.Primary"
+                                           OnClick="@(() => OpenShareDialog(vault))"
+                                           Icon="@Icons.Material.Filled.Share"
+                                           Title="Share vault" />
 
-                        <MudIconButton Color="Color.Error"
-                                       OnClick="@(() => DeleteVault(vault))"
-                                       Icon="@Icons.Material.Filled.Delete"
-                                       Title="Delete vault" />
-                    </MudStack>
+                            <MudIconButton Color="Color.Error"
+                                           OnClick="@(() => DeleteVault(vault))"
+                                           Icon="@Icons.Material.Filled.Delete"
+                                           Title="Delete vault" />
+                        </MudStack>
 
-                </MudPaper>
-            }
-        </MudStack>
+                    </MudPaper>
+                }
+            </MudStack>
+        }
+
+        <!-- Coffres partagés -->
+        @if (sharedVaults.Any())
+        {
+            <MudDivider Class="my-4" />
+
+            <MudText Typo="Typo.h5" Class="mb-3">
+                <MudIcon Icon="@Icons.Material.Filled.People" Class="mr-2" />
+                Shared Vaults
+            </MudText>
+
+            <MudStack Spacing="2">
+                @foreach (var vault in sharedVaults)
+                {
+                    <MudPaper Elevation="1"
+                              Class="@($"vault-card {(selectedVault?.Id == vault.Id ? "selected" : "")}")"
+                              @onclick="() => SelectVault(vault)">
+
+                        <MudStack Row="true" AlignItems="AlignItems.Center">
+                            <MudIcon Icon="@Icons.Material.Filled.People" Size="Size.Small" Class="mr-2" Color="Color.Info" />
+                            <MudText Typo="Typo.subtitle1">
+                                @vault.Name
+                            </MudText>
+
+                            <MudSpacer />
+
+                            <!-- Pas de boutons edit/share/delete pour les vaults partagés -->
+                        </MudStack>
+
+                    </MudPaper>
+                }
+            </MudStack>
+        }
     }
 </MudContainer>
 
 
 @code {
     private List<GetVaultResponse> vaults = new();
+    private List<GetVaultResponse> sharedVaults = new();
 
     private GetVaultResponse? selectedVault;
 
@@ -92,7 +130,14 @@
 
         try
         {
-            vaults = await VaultService.GetAllVaultsAsync();
+            // Charger mes vaults et les vaults partagés en parallèle
+            var myVaultsTask = VaultService.GetAllVaultsAsync();
+            var sharedVaultsTask = VaultService.GetSharedVaultsAsync();
+
+            await Task.WhenAll(myVaultsTask, sharedVaultsTask);
+
+            vaults = await myVaultsTask;
+            sharedVaults = await sharedVaultsTask;
         }
         catch (ApiException ex)
         {
@@ -100,7 +145,7 @@
         }
         catch (Exception ex)
         {
-            Snackbar.Add($"Erreur inattendue : {ex.Message}", Severity.Error);
+            Snackbar.Add($"Unexpected error: {ex.Message}", Severity.Error);
         }
 
         isLoading = false;
@@ -158,9 +203,9 @@
         {
             { "OnSave", EventCallback.Factory.Create<GetVaultResponse>(this, AddVault) }
         };
-    
+
         var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true };
-    
+
         await DialogService.ShowAsync<CreateVaultDialog>("Create Vault", parameters, options);
     }
 

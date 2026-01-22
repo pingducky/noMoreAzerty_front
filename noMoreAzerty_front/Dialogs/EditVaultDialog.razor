@@ -1,31 +1,104 @@
 ﻿@using Microsoft.AspNetCore.Authorization
+@using noMoreAzerty_dto.DTOs.Request
 @using noMoreAzerty_dto.DTOs.Response
 @using noMoreAzerty_front.Services
+@using noMoreAzerty_front.Handlers
 @inject VaultService VaultService
+@inject VaultEntryService VaultEntryService
+@inject VaultKeyManager KeyManager
 @inject ISnackbar Snackbar
+@inject IJSRuntime JS
 @attribute [Authorize]
 
-<MudDialog>
+<MudDialog MaxWidth="MaxWidth.Medium" FullWidth="true">
     <TitleContent>
         <MudText Typo="Typo.h6">Edit Vault</MudText>
     </TitleContent>
 
     <DialogContent>
-        <MudTextField @bind-Value="VaultName"
-                      Label="Vault Name"
-                      Variant="Variant.Outlined"
-                      Margin="Margin.Dense"
-                      Required="true"
-                      FullWidth />
+        <MudStack Spacing="3">
+            <!-- Nom du vault -->
+            <MudCard Elevation="0" Outlined="true">
+                <MudCardContent>
+                    <MudText Typo="Typo.subtitle1" Class="mb-2">Vault Name</MudText>
+                    <MudTextField @bind-Value="VaultName"
+                                  Label="Name"
+                                  Variant="Variant.Outlined"
+                                  Margin="Margin.Dense"
+                                  Required="true"
+                                  FullWidth />
+                </MudCardContent>
+            </MudCard>
+
+            <!-- Changement de mot de passe (optionnel) -->
+            <MudCard Elevation="0" Outlined="true">
+                <MudCardContent>
+                    <MudStack Spacing="2">
+                        <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
+                            <MudText Typo="Typo.subtitle1">Change Password (Optional)</MudText>
+                            <MudSwitch @bind-Value="changePassword" Color="Color.Primary" />
+                        </MudStack>
+
+                        @if (changePassword)
+                        {
+                            <MudAlert Severity="Severity.Warning" Dense="true">
+                                Changing the password will re-encrypt all entries in this vault. This may take a few moments.
+                            </MudAlert>
+
+                            <MudTextField @bind-Value="NewPassword"
+                                          Label="New Password"
+                                          Variant="Variant.Outlined"
+                                          Margin="Margin.Dense"
+                                          InputType="@(showPassword? InputType.Text: InputType.Password)"
+                                          Required="true"
+                                          Adornment="Adornment.End"
+                                          AdornmentIcon="@(showPassword? Icons.Material.Filled.VisibilityOff : Icons.Material.Filled.Visibility)"
+                                          OnAdornmentClick="@(() => showPassword = !showPassword)"
+                                          FullWidth />
+
+                            <MudTextField @bind-Value="ConfirmPassword"
+                                          Label="Confirm New Password"
+                                          Variant="Variant.Outlined"
+                                          Margin="Margin.Dense"
+                                          InputType="@(showPassword? InputType.Text: InputType.Password)"
+                                          Required="true"
+                                          Error="@(NewPassword != ConfirmPassword && !string.IsNullOrEmpty(ConfirmPassword))"
+                                          ErrorText="Passwords do not match"
+                                          FullWidth />
+                        }
+                    </MudStack>
+                </MudCardContent>
+            </MudCard>
+
+            @if (isProcessing && totalEntries > 0)
+            {
+                <MudCard Elevation="0" Outlined="true">
+                    <MudCardContent>
+                        <MudText Typo="Typo.body2" Class="mb-2">
+                            Re-encrypting entries: @processedEntries / @totalEntries
+                        </MudText>
+                        <MudProgressLinear Value="@progressPercentage" Color="Color.Primary" />
+                    </MudCardContent>
+                </MudCard>
+            }
+        </MudStack>
     </DialogContent>
 
     <DialogActions>
-        <MudButton OnClick="Cancel" Variant="Variant.Text">Cancel</MudButton>
+        <MudButton OnClick="Cancel" Variant="Variant.Text" Disabled="@isProcessing">Cancel</MudButton>
         <MudButton OnClick="Save"
                    Color="Color.Primary"
                    Variant="Variant.Filled"
-                   Disabled="@(string.IsNullOrWhiteSpace(VaultName))">
-            Save
+                   Disabled="@(!IsValid || isProcessing)">
+            @if (isProcessing)
+            {
+                <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="mr-2" />
+                <span>Processing...</span>
+            }
+            else
+            {
+                <span>Save</span>
+            }
         </MudButton>
     </DialogActions>
 </MudDialog>
@@ -36,6 +109,21 @@
     [Parameter] public EventCallback<GetVaultResponse> OnSave { get; set; }
 
     private string VaultName { get; set; } = string.Empty;
+    private string NewPassword { get; set; } = string.Empty;
+    private string ConfirmPassword { get; set; } = string.Empty;
+    private bool changePassword = false;
+    private bool showPassword = false;
+    private bool isProcessing = false;
+    private int processedEntries = 0;
+    private int totalEntries = 0;
+
+    private double progressPercentage => totalEntries > 0 ? (processedEntries * 100.0 / totalEntries) : 0;
+
+    private bool IsValid =>
+        !string.IsNullOrWhiteSpace(VaultName) &&
+        (!changePassword ||
+         (!string.IsNullOrWhiteSpace(NewPassword) &&
+          NewPassword == ConfirmPassword));
 
     protected override void OnInitialized()
     {
@@ -44,12 +132,44 @@
 
     private async Task Save()
     {
-        if (string.IsNullOrWhiteSpace(VaultName))
-            return;
+        if (!IsValid) return;
 
-        var updateRequest = new VaultService.UpdateVaultNameRequest
+        isProcessing = true;
+        StateHasChanged();
+
+        try
         {
-            Name = VaultName
+            if (changePassword)
+            {
+                await SaveWithPasswordChange();
+            }
+            else
+            {
+                await SaveNameOnly();
+            }
+        }
+        catch (ApiException ex)
+        {
+            Snackbar.Add(ex.Message, Severity.Error);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Unexpected error: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            isProcessing = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task SaveNameOnly()
+    {
+        var updateRequest = new UpdateVaultRequest
+        {
+            Name = VaultName,
+            NewDerivedPassword = null,
+            PasswordSalt = null
         };
 
         var updatedVault = await VaultService.UpdateVaultAsync(Vault.Id, updateRequest);
@@ -61,6 +181,129 @@
         }
 
         Snackbar.Add("Vault updated successfully", Severity.Success);
+        await OnSave.InvokeAsync(updatedVault);
+        MudDialog.Close();
+    }
+
+    private async Task SaveWithPasswordChange()
+    {
+        // Récupérer la clé de dérivation actuelle
+        var currentKey = await KeyManager.GetDerivationKeyAsync(Vault.Id);
+        if (string.IsNullOrEmpty(currentKey))
+        {
+            Snackbar.Add("Vault is locked. Please unlock it first.", Severity.Error);
+            return;
+        }
+
+        var currentSalt = VaultService.Salt;
+        if (string.IsNullOrEmpty(currentSalt))
+        {
+            Snackbar.Add("Salt not found. Please unlock the vault first.", Severity.Error);
+            return;
+        }
+
+        // Récupérer toutes les métadonnées des entrées du vault
+        var entries = await VaultEntryService.GetEntriesMetadataAsync(Vault.Id);
+        totalEntries = entries.Count;
+        processedEntries = 0;
+        StateHasChanged();
+
+        // Générer un nouveau salt et une nouvelle clé de dérivation
+        var newSalt = await JS.InvokeAsync<string>("generateSalt", 32);
+        var newKey = await JS.InvokeAsync<string>("deriveKeyString", NewPassword, newSalt, 100000);
+
+        // Rechiffrer et mettre à jour chaque entrée une par une
+        foreach (var entry in entries)
+        {
+            try
+            {
+                // Récupérer l'entrée complète
+                var fullEntry = await VaultEntryService.GetEntryByIdAsync(Vault.Id, entry.Id);
+                if (fullEntry == null)
+                {
+                    Snackbar.Add($"Failed to load entry {entry.Id}", Severity.Warning);
+                    continue;
+                }
+
+                // Déchiffrer avec l'ancienne clé
+                var decryptedTitle = await JS.InvokeAsync<string>("decryptAesGcm", currentKey, currentSalt,
+                    fullEntry.TitleIV, fullEntry.TitleTag, fullEntry.CipherTitle, 100000);
+                var decryptedUsername = await JS.InvokeAsync<string>("decryptAesGcm", currentKey, currentSalt,
+                    fullEntry.UsernameIV, fullEntry.UsernameTag, fullEntry.CipherUsername, 100000);
+                var decryptedPassword = await JS.InvokeAsync<string>("decryptAesGcm", currentKey, currentSalt,
+                    fullEntry.PasswordIV, fullEntry.PasswordTag, fullEntry.CipherPassword, 100000);
+                var decryptedUrl = await JS.InvokeAsync<string>("decryptAesGcm", currentKey, currentSalt,
+                    fullEntry.UrlIV, fullEntry.UrlTag, fullEntry.CipherUrl, 100000);
+                var decryptedCommentary = await JS.InvokeAsync<string>("decryptAesGcm", currentKey, currentSalt,
+                    fullEntry.ComentaryIV, fullEntry.ComentaryTag, fullEntry.CipherCommentary, 100000);
+
+                // Rechiffrer avec la nouvelle clé
+                var titleResult = await JS.InvokeAsync<Dictionary<string, string>>("encryptAesGcm", newKey, newSalt, decryptedTitle);
+                var usernameResult = await JS.InvokeAsync<Dictionary<string, string>>("encryptAesGcm", newKey, newSalt, decryptedUsername);
+                var passwordResult = await JS.InvokeAsync<Dictionary<string, string>>("encryptAesGcm", newKey, newSalt, decryptedPassword);
+                var urlResult = await JS.InvokeAsync<Dictionary<string, string>>("encryptAesGcm", newKey, newSalt, decryptedUrl);
+                var commentaryResult = await JS.InvokeAsync<Dictionary<string, string>>("encryptAesGcm", newKey, newSalt, decryptedCommentary);
+
+                // Mettre à jour l'entrée
+                var updateRequest = new UpdateVaultEntryRequest
+                {
+                    CipherTitle = titleResult["ciphertext"],
+                    TitleIV = titleResult["iv"],
+                    TitleTag = titleResult["tag"],
+                    CipherUsername = usernameResult["ciphertext"],
+                    UsernameIV = usernameResult["iv"],
+                    UsernameTag = usernameResult["tag"],
+                    CipherPassword = passwordResult["ciphertext"],
+                    PasswordIV = passwordResult["iv"],
+                    PasswordTag = passwordResult["tag"],
+                    CipherUrl = urlResult["ciphertext"],
+                    UrlIV = urlResult["iv"],
+                    UrlTag = urlResult["tag"],
+                    CipherCommentary = commentaryResult["ciphertext"],
+                    ComentaryIV = commentaryResult["iv"],
+                    ComentaryTag = commentaryResult["tag"]
+                };
+
+                var updatedEntry = await VaultEntryService.UpdateEntryAsync(updateRequest, Vault.Id, entry.Id);
+
+                if (updatedEntry == null)
+                {
+                    Snackbar.Add($"Failed to update entry: {decryptedTitle}", Severity.Warning);
+                }
+
+                processedEntries++;
+                StateHasChanged();
+            }
+            catch (Exception ex)
+            {
+                Snackbar.Add($"Error processing entry: {ex.Message}", Severity.Warning);
+            }
+        }
+
+        Console.WriteLine($"NOUVEAU SALT : {newSalt}.");
+
+        // Mettre à jour le vault avec le nouveau nom et mot de passe
+        var vaultUpdateRequest = new UpdateVaultRequest
+        {
+            Name = VaultName,
+            NewDerivedPassword = NewPassword,
+            PasswordSalt = newSalt
+        };
+
+        var updatedVault = await VaultService.UpdateVaultAsync(Vault.Id, vaultUpdateRequest);
+
+        if (updatedVault == null)
+        {
+            Snackbar.Add("Failed to update vault", Severity.Error);
+            return;
+        }
+
+        // Mettre à jour la clé et le salt en mémoire et dans sessionStorage
+        VaultService.Salt = newSalt;
+        VaultService.Password = NewPassword;
+        await KeyManager.SaveDerivationKeyAsync(Vault.Id, newKey);
+
+        Snackbar.Add($"Vault updated successfully. {processedEntries} entries re-encrypted.", Severity.Success);
         await OnSave.InvokeAsync(updatedVault);
         MudDialog.Close();
     }

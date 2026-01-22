@@ -7,7 +7,7 @@ namespace noMoreAzerty_front.Services
 {
     public class VaultEntryService
     {
-        public List<VaultEntryMetadata>? Entries { get; set; }
+        public List<VaultEntryMetadataResponse>? Entries { get; set; }
 
         private readonly HttpClient _httpClient;
 
@@ -16,7 +16,7 @@ namespace noMoreAzerty_front.Services
             _httpClient = httpClientFactory.CreateClient("API");
         }
 
-        public async Task<List<VaultEntryMetadata>?> GetEntriesMetadataAsync(Guid vaultId)
+        public async Task<List<VaultEntryMetadataResponse>?> GetEntriesMetadataAsync(Guid vaultId)
         {
             var response = await _httpClient.GetAsync($"api/vaults/{vaultId}/entries/metadata");
 
@@ -24,7 +24,7 @@ namespace noMoreAzerty_front.Services
                 return null;
 
             var content = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<List<VaultEntryMetadata>>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            return JsonSerializer.Deserialize<List<VaultEntryMetadataResponse>>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         }
 
         public async Task<GetVaultEntriesResponse?> GetEntryByIdAsync(Guid vaultId, Guid entryId)
@@ -109,26 +109,6 @@ namespace noMoreAzerty_front.Services
             entry.CipherUrl = await js.InvokeAsync<string>("decryptAesGcm", password, salt, entry.CipherUrl, entry.UrlIV, entry.UrlTag);
             entry.CipherCommentary = await js.InvokeAsync<string>("decryptAesGcm", password, salt, entry.CipherCommentary, entry.ComentaryIV, entry.ComentaryTag);
             return entry;
-        }
-
-
-
-        public class VaultEntryMetadata
-        {
-            public Guid Id { get; set; }
-            public string? CipherTitle { get; set; }
-            public string? TitleIV { get; set; }
-            public string? TitleTag { get; set; }
-            public DateTime? CreatedAt { get; set; }
-            public DateTime? UpdatedAt { get; set; }
-        }
-
-        public class VaultAccessRequestDto
-        {
-            /// <summary>
-            /// Mot de passe en clair envoyé par le client
-            /// </summary>
-            public string Password { get; set; } = null!;
         }
 
     }

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "uaQ1nfyIzxE=",
+  "dgSpecHash": "vSGIAie5Oo4=",
   "success": true,
   "projectFilePath": "C:\\Users\\antho\\OneDrive\\Documents\\Cours\\M2\\Architecture .NET\\TP\\noMoreAzerty_front\\noMoreAzerty_front\\noMoreAzerty_front.csproj",
   "expectedPackageFiles": [
@@ -40,7 +40,7 @@
     "C:\\Users\\antho\\.nuget\\packages\\microsoft.net.illink.tasks\\8.0.23\\microsoft.net.illink.tasks.8.0.23.nupkg.sha512",
     "C:\\Users\\antho\\.nuget\\packages\\microsoft.net.sdk.webassembly.pack\\10.0.2\\microsoft.net.sdk.webassembly.pack.10.0.2.nupkg.sha512",
     "C:\\Users\\antho\\.nuget\\packages\\mudblazor\\8.15.0\\mudblazor.8.15.0.nupkg.sha512",
-    "C:\\Users\\antho\\.nuget\\packages\\nomoreazerty.shared\\1.0.10\\nomoreazerty.shared.1.0.10.nupkg.sha512",
+    "C:\\Users\\antho\\.nuget\\packages\\nomoreazerty.shared\\1.0.14\\nomoreazerty.shared.1.0.14.nupkg.sha512",
     "C:\\Users\\antho\\.nuget\\packages\\system.io.pipelines\\8.0.0\\system.io.pipelines.8.0.0.nupkg.sha512",
     "C:\\Users\\antho\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\8.0.23\\microsoft.windowsdesktop.app.ref.8.0.23.nupkg.sha512",
     "C:\\Users\\antho\\.nuget\\packages\\microsoft.netcore.app.ref\\8.0.23\\microsoft.netcore.app.ref.8.0.23.nupkg.sha512",

@@ -110,7 +110,9 @@
             var metadata = await VaultEntryService.GetEntriesMetadataAsync(VaultId);
 
             if (metadata == null || !metadata.Any())
+            {
                 return;
+            }
 
             // Récupérer la clé de chiffrement / déchiffrement
             var keyDerivation = await KeyManager.GetDerivationKeyAsync(VaultId);
@@ -128,10 +130,11 @@
                     100000
                 );
 
+
                 entriesMetadata.Add(new EntryMetadataViewModel
                 {
                     Id = entry.Id,
-                    DecryptedTitle = decryptedTitle,
+                    DecryptedTitle = decryptedTitle ?? "[Decryption failed]",
                     CreatedAt = entry.CreatedAt,
                     UpdatedAt = entry.UpdatedAt
                 });

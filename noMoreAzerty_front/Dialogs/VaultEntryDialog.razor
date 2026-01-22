@@ -345,10 +345,11 @@
                 return;
             }
 
+            // TODO : Je peux enlever tout ça ?
             // Déchiffrement des données pour affichage
             vaultEntry.CipherTitle = await JS.InvokeAsync<string>(
                 "decryptAesGcm",
-                VaultService.Password,
+                keyDerivation,
                 VaultService.Salt,
                 vaultEntry.TitleIV,
                 vaultEntry.TitleTag,
@@ -358,7 +359,7 @@
 
             vaultEntry.CipherUsername = await JS.InvokeAsync<string>(
                 "decryptAesGcm",
-                VaultService.Password,
+                keyDerivation,
                 VaultService.Salt,
                 vaultEntry.UsernameIV,
                 vaultEntry.UsernameTag,
@@ -368,7 +369,7 @@
 
             vaultEntry.CipherUrl = await JS.InvokeAsync<string>(
                 "decryptAesGcm",
-                VaultService.Password,
+                keyDerivation,
                 VaultService.Salt,
                 vaultEntry.UrlIV,
                 vaultEntry.UrlTag,
@@ -378,7 +379,7 @@
 
             vaultEntry.CipherPassword = await JS.InvokeAsync<string>(
                 "decryptAesGcm",
-                VaultService.Password,
+                keyDerivation,
                 VaultService.Salt,
                 vaultEntry.PasswordIV,
                 vaultEntry.PasswordTag,
@@ -388,7 +389,7 @@
 
             vaultEntry.CipherCommentary = await JS.InvokeAsync<string>(
                 "decryptAesGcm",
-                VaultService.Password,
+                keyDerivation,
                 VaultService.Salt,
                 vaultEntry.ComentaryIV,
                 vaultEntry.ComentaryTag,

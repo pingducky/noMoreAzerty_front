@@ -119,6 +119,35 @@ public class VaultKeyManager
     }
 
     /// <summary>
+    /// Sauvegarde la clé de dérivation de manière sécurisée
+    /// </summary>
+    public async Task SaveDerivationKeyAsync(Guid vaultId, string keyDerivation)
+    {
+        // Générer KEY_STORAGE (RNG)
+        var keyStorage = await _js.InvokeAsync<string>("generateRandomKey", 32);
+        var ivStorage = await _js.InvokeAsync<string>("generateRandomBytes", 12);
+
+        // Chiffrer KEY_DERIVATION avec KEY_STORAGE
+        var encrypted = await _js.InvokeAsync<Dictionary<string, string>>(
+            "encryptAesGcm",
+            keyStorage,
+            "",
+            keyDerivation
+        );
+
+        // Stocker ENCRYPTED_KEY localement
+        _encryptedKey = encrypted["ciphertext"];
+        _tagStorage = encrypted["tag"];
+        _ivStorage = encrypted["iv"];
+
+        // Envoyer KEY_STORAGE à l'API pour stockage session
+        await StoreKeyStorageAsync(vaultId, keyStorage);
+
+        _currentVaultId = vaultId;
+        _isUnlocked = true;
+    }
+
+    /// <summary>
     /// Vérifie le mot de passe
     /// </summary>
     private async Task<bool> VerifyPasswordAsync(Guid vaultId, string password)

@@ -29,17 +29,29 @@ public class VaultService
             new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
     }
 
-    public async Task<List<VaultUser>> GetVaultUsersAsync(Guid vaultId)
+    public async Task<List<GetVaultResponse>> GetSharedVaultsAsync()
     {
-        // TODO : Route à créer dans l'API
-        var response = await _httpClient.GetAsync($"api/vault/{vaultId}/users");
+        var response = await _httpClient.GetAsync("api/vault/shared");
 
         if (!response.IsSuccessStatusCode)
             return [];
 
         var content = await response.Content.ReadAsStringAsync();
-        return JsonSerializer.Deserialize<List<VaultUser>>(content,
-            new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new();
+        return JsonSerializer.Deserialize<List<GetVaultResponse>>(content,
+            new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? [];
+    }
+
+
+    public async Task<VaultUsersResponse?> GetVaultUsersAsync(Guid vaultId)
+    {
+        var response = await _httpClient.GetAsync($"api/vault/{vaultId}/users");
+
+        if (!response.IsSuccessStatusCode)
+            return null;
+
+        var content = await response.Content.ReadAsStringAsync();
+        return JsonSerializer.Deserialize<VaultUsersResponse>(content,
+            new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
     }
 
     public async Task<GetVaultResponse?> CreateVaultAsync(CreateVaultRequest createVaultRequest)
@@ -54,7 +66,7 @@ public class VaultService
         return JsonSerializer.Deserialize<GetVaultResponse>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
     }
 
-    public async Task<GetVaultResponse?> UpdateVaultAsync(Guid vaultId, UpdateVaultNameRequest updateRequest)
+    public async Task<GetVaultResponse?> UpdateVaultAsync(Guid vaultId, UpdateVaultRequest updateRequest)
     {
         var jsonContent = new StringContent(
             JsonSerializer.Serialize(updateRequest),
@@ -68,7 +80,8 @@ public class VaultService
             return null;
 
         var content = await response.Content.ReadAsStringAsync();
-        return JsonSerializer.Deserialize<GetVaultResponse>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+        return JsonSerializer.Deserialize<GetVaultResponse>(content,
+            new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
     }
 
     public async Task<bool> DeleteVaultAsync(Guid vaultId)
@@ -92,17 +105,16 @@ public class VaultService
 
         var content = await response.Content.ReadAsStringAsync();
 
-        // Désérialiser directement le bool
         var result = JsonSerializer.Deserialize<bool>(content,
             new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
         return result;
     }
 
-    public async Task<bool> ShareVaultAsync(Guid vaultId, string userEmail)
+    public async Task<bool> ShareVaultAsync(Guid vaultId, string userName)
     {
         var jsonContent = new StringContent(
-            JsonSerializer.Serialize(new { Email = userEmail }),
+            JsonSerializer.Serialize(new { UserName = userName }),
             System.Text.Encoding.UTF8,
             "application/json"
         );
@@ -114,18 +126,9 @@ public class VaultService
 
     public async Task<bool> RemoveUserFromVaultAsync(Guid vaultId, Guid userId)
     {
-        var response = await _httpClient.DeleteAsync($"api/vault/{vaultId}/users/{userId}");
+        var response = await _httpClient.DeleteAsync($"api/vault/{vaultId}/share/{userId}");
 
         return response.IsSuccessStatusCode;
-    }
-
-
-    // Classe pour représenter un utilisateur ayant accès au coffre
-    public class VaultUser
-    {
-        public Guid Id { get; set; }
-        public string? Email { get; set; }
-        public bool IsOwner { get; set; } // Pour empêcher de supprimer le propriétaire
     }
 
     public class UpdateVaultNameRequest
